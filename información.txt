@@ -1,0 +1,20 @@
+Somos el grupo formado por Marcos Burdaspar e Iñigo García.
+
+- Compilación
+Hemos creado un Makefile para facilitar la compilación y
+ejecución con los ejemplos.
+
+Al hacer make sin nada mas, se generara el fichero lex.yy.c
+posteriormente se compilara y obtendremos el ejecutable a.out
+
+Si hacemos make X, siendo X el número del programa a probar,
+se ejecutara la compilación del paso anterior y después se 
+ejecutara ./a.out y el programa elegido.
+
+Finalmente si hacemos make clean, borrara los archivos a.out
+y lex.yy.c
+
+- Ejemplos
+Además de los ejemplos proporcionados en el guión de la práctica
+hemos añadido uno más en el que se puede ver el uso de comentarios
+ademas del uso de tablas y su consiguiente acceso ([0..N])
