@@ -36,21 +36,17 @@
 %token tk_ent
 %token tk_sal
 %token tk_ent_sal
-%left tk_suma
-%left tk_resta
-%left tk_multiplicacion
-%left tk_division
-%left tk_modulo
-%left tk_div
+
+%left tk_suma tk_resta tk_AND tk_OR
+%left tk_multiplicacion tk_division tk_modulo tk_div
+%left tk_operador_relacional
+%left tk_NOT
+
 %token tk_parentesis_apertura
 %token tk_parentesis_cierre
 %token tk_literal_numerico
-%left tk_AND
-%left tk_OR
-%left tk_NOT
 %token tk_verdadero
 %token tk_falso
-%left tk_operador_relacional
 %token tk_continuar
 %token tk_asignacion
 %token tk_si
