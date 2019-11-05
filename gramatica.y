@@ -150,31 +150,23 @@ decl_ent:        tk_ent lista_d_var { printf("Regla decl_ent") }
 decl_sal:        tk_sal lista_d_var { printf("Regla decl_sal") }
         ;
                     
-expresion:       exp_a { printf("Regla expresion (-> exp_a)") }
-        |        exp_b { printf("Regla expresion (-> exp_b)") }
-        |        funcion_ll { printf("Regla expresion (-> funcion_ll)") }
-        ;
-                    
-exp_a:           exp_a tk_suma exp_a { printf("Regla exp_a (-> suma)") }
-    |            exp_a tk_resta exp_a { printf("Regla exp_a (-> resta)") }
-    |            exp_a tk_multiplicacion exp_a { printf("Regla exp_a (-> multiplicacion)") }
-    |            exp_a tk_division exp_a { printf("Regla exp_a (-> division)") }
-    |            exp_a tk_modulo exp_a { printf("Regla exp_a (-> modulo)") }
-    |            exp_a tk_div exp_a { printf("Regla exp_a (-> div)") }
-    |            tk_parentesis_apertura exp_a tk_parentesis_cierre { printf("Regla exp_a (-> parentesis)") }
-    |            operando { printf("Regla exp_a (-> operando)") }
-    |            tk_literal_numerico { printf("Regla exp_a (-> literal numerico)") }
-    |            tk_resta exp_a { printf("Regla exp_a (-> menos unario)") }
-    ;
-                    
-exp_b:           exp_b tk_AND exp_b { printf("Regla exp_b (-> and)") }
-    |            exp_b tk_OR exp_b { printf("Regla exp_b (-> or)") }
-    |            tk_NOT exp_b { printf("Regla exp_b (-> not)") }
-    |            operando { printf("Regla exp_b (-> operando)") }
-    |            tk_verdadero { printf("Regla exp_b (-> verdadero)") }
-    |            tk_falso { printf("Regla exp_b (-> falso)") }
-    |            expresion tk_operador_relacional expresion { printf("Regla exp_b (-> operador relacional)") }
-    |            tk_parentesis_apertura exp_b tk_parentesis_cierre { printf("Regla exp_b (-> parentesis)") }
+expresion:       funcion_ll { printf("Regla expresion (-> funcion_ll)") }
+    |            expresion tk_suma expresion { printf("Regla expresion (-> suma)") }
+    |            expresion tk_resta expresion { printf("Regla expresion (-> resta)") }
+    |            expresion tk_multiplicacion expresion { printf("Regla expresion (-> multiplicacion)") }
+    |            expresion tk_division expresion { printf("Regla expresion (-> division)") }
+    |            expresion tk_modulo expresion { printf("Regla expresion (-> modulo)") }
+    |            expresion tk_div expresion { printf("Regla expresion (-> div)") }
+    |            tk_parentesis_apertura expresion tk_parentesis_cierre { printf("Regla expresion (-> parentesis)") }
+    |            operando { printf("Regla expresion (-> operando)") }
+    |            tk_literal_numerico { printf("Regla expresion (-> literal numerico)") }
+    |            tk_resta expresion { printf("Regla expresion (-> menos unario)") }
+    |            expresion tk_AND expresion { printf("Regla expresion (-> and)") }
+    |            expresion tk_OR expresion { printf("Regla expresion (-> or)") }
+    |            tk_NOT expresion { printf("Regla expresion (-> not)") }
+    |            tk_verdadero { printf("Regla expresion (-> verdadero)") }
+    |            tk_falso { printf("Regla expresion (-> falso)") }
+    |            expresion tk_operador_relacional expresion { printf("Regla expresion (-> operador relacional)") }
     ;
                     
 operando:        tk_identificador { printf("Regla operando (-> identificador)") }
