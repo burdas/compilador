@@ -1,0 +1,2994 @@
+Estado 67 conflictos: 1 reducción/reducción
+Estado 82 conflictos: 1 desplazamiento/reducción
+Estado 132 conflictos: 1 desplazamiento/reducción
+Estado 140 conflictos: 3 desplazamiento/reducción
+
+
+Gramática
+
+    0 $accept: desc_algoritmo $end
+
+    1 desc_algoritmo: tk_algoritmo tk_identificador tk_punto_coma cabecera_alg bloque_alg tk_falgoritmo tk_punto
+
+    2 cabecera_alg: decl_globales decl_a_f decl_ent_sal tk_comentario
+
+    3 bloque_alg: bloque tk_comentario
+
+    4 decl_globales: declaracion_tipo decl_globales
+    5              | declaracion_cte decl_globales
+    6              | %empty
+
+    7 decl_a_f: accion_d decl_a_f
+    8         | funcion_d decl_a_f
+    9         | %empty
+
+   10 bloque: declaraciones instrucciones
+
+   11 declaraciones: declaracion_tipo declaraciones
+   12              | declaracion_cte declaraciones
+
+   13 $@1: %empty
+
+   14 declaraciones: declaracion_var declaraciones $@1
+   15              | %empty
+
+   16 declaracion_tipo: tk_tipo lista_d_tipo tk_ftipo tk_punto_coma
+
+   17 declaracion_cte: tk_const lista_d_cte tk_fconst tk_punto_coma
+
+   18 declaracion_var: tk_var lista_d_var tk_fvar tk_punto_coma
+
+   19 lista_d_tipo: tk_identificador tk_igual d_tipo tk_punto_coma lista_d_tipo
+   20             | %empty
+
+   21 d_tipo: tk_tupla lista_campos tk_ftupla
+   22       | tk_tabla tk_corchete_abierto expresion_t tk_subrango expresion_t tk_corchete_cerrado tk_de d_tipo
+   23       | tk_identificador
+   24       | expresion_t tk_subrango expresion_t
+   25       | tk_ref d_tipo
+   26       | tk_tipo_base
+
+   27 expresion_t: expresion
+   28            | tk_literal_caracter
+
+   29 lista_campos: tk_identificador tk_dospuntos d_tipo tk_punto lista_campos
+   30             | %empty
+
+   31 lista_d_cte: tk_identificador tk_igual tk_literal tk_punto_coma lista_d_cte
+   32            | %empty
+
+   33 lista_d_var: lista_id tk_dospuntos tk_identificador tk_punto_coma lista_d_var
+   34            | lista_id tk_dospuntos d_tipo tk_punto_coma lista_d_var
+   35            | %empty
+
+   36 lista_id: tk_identificador tk_coma lista_id
+   37         | tk_identificador
+   38         | %empty
+
+   39 decl_ent_sal: decl_ent
+   40             | decl_ent decl_sal
+   41             | decl_sal
+
+   42 decl_ent: tk_ent lista_d_var
+
+   43 decl_sal: tk_sal lista_d_var
+
+   44 expresion: funcion_ll
+   45          | expresion tk_suma expresion
+   46          | expresion tk_resta expresion
+   47          | expresion tk_multiplicacion expresion
+   48          | expresion tk_division expresion
+   49          | expresion tk_modulo expresion
+   50          | expresion tk_div expresion
+   51          | tk_parentesis_apertura expresion tk_parentesis_cierre
+   52          | operando
+   53          | tk_literal_numerico
+   54          | tk_resta expresion
+   55          | expresion tk_AND expresion
+   56          | expresion tk_OR expresion
+   57          | tk_NOT expresion
+   58          | tk_verdadero
+   59          | tk_falso
+   60          | expresion tk_operador_relacional expresion
+
+   61 operando: tk_identificador
+   62         | operando tk_punto operando
+   63         | operando tk_corchete_abierto expresion tk_corchete_cerrado
+   64         | operando tk_ref
+
+   65 instrucciones: instruccion tk_punto_coma instrucciones
+   66              | instruccion
+
+   67 instruccion: tk_continuar
+   68            | asignacion
+   69            | alternativa
+   70            | iteracion
+   71            | accion_ll
+
+   72 asignacion: operando tk_asignacion expresion
+
+   73 alternativa: tk_si expresion tk_entonces instrucciones lista_opciones tk_fsi
+
+   74 lista_opciones: tk_sino expresion tk_entonces instrucciones lista_opciones
+   75               | %empty
+
+   76 iteracion: it_cota_fija
+   77          | it_cota_exp
+
+   78 it_cota_exp: tk_mientras expresion tk_hacer instrucciones tk_fmientras
+
+   79 it_cota_fija: tk_para tk_identificador tk_asignacion expresion tk_hasta expresion tk_hacer instrucciones tk_fpara
+
+   80 accion_d: tk_accion a_cabecera bloque tk_faccion
+
+   81 funcion_d: tk_funcion f_cabecera bloque tk_dev expresion tk_ffuncion
+
+   82 a_cabecera: tk_identificador tk_parentesis_apertura d_par_form tk_parentesis_cierre tk_punto_coma
+
+   83 f_cabecera: tk_identificador tk_parentesis_apertura lista_d_var tk_parentesis_cierre tk_dev d_tipo tk_punto_coma
+
+   84 d_par_form: d_p_form tk_punto_coma d_par_form
+   85           | %empty
+
+   86 d_p_form: tk_ent lista_id tk_dospuntos d_tipo
+   87         | tk_sal lista_id tk_dospuntos d_tipo
+   88         | tk_ent_sal lista_id tk_dospuntos d_tipo
+
+   89 accion_ll: tk_identificador tk_parentesis_apertura l_ll tk_parentesis_cierre
+
+   90 funcion_ll: tk_identificador tk_parentesis_apertura l_ll tk_parentesis_cierre
+
+   91 l_ll: expresion tk_coma l_ll
+   92     | expresion
+
+
+Terminales con las reglas donde aparecen
+
+    $end (0) 0
+    error (256)
+    tk_algoritmo (258) 1
+    tk_identificador (259) 1 19 23 29 31 33 36 37 61 79 82 83 89 90
+    tk_punto_coma (260) 1 16 17 18 19 31 33 34 65 82 83 84
+    tk_punto (261) 1 29 62
+    tk_falgoritmo (262) 1
+    tk_comentario (263) 2 3
+    tk_tipo (264) 16
+    tk_ftipo (265) 16
+    tk_const (266) 17
+    tk_fconst (267) 17
+    tk_var (268) 18
+    tk_fvar (269) 18
+    tk_tupla (270) 21
+    tk_ftupla (271) 21
+    tk_igual (272) 19 31
+    tk_tabla (273) 22
+    tk_dospuntos (274) 29 33 34 86 87 88
+    tk_de (275) 22
+    tk_corchete_abierto (276) 22 63
+    tk_corchete_cerrado (277) 22 63
+    tk_ref (278) 25 64
+    tk_tipo_base (279) 26
+    tk_literal_caracter (280) 28
+    tk_literal (281) 31
+    tk_coma (282) 36 91
+    tk_ent (283) 42 86
+    tk_sal (284) 43 87
+    tk_ent_sal (285) 88
+    tk_suma (286) 45
+    tk_resta (287) 46 54
+    tk_AND (288) 55
+    tk_OR (289) 56
+    tk_multiplicacion (290) 47
+    tk_division (291) 48
+    tk_modulo (292) 49
+    tk_div (293) 50
+    tk_operador_relacional (294) 60
+    tk_NOT (295) 57
+    tk_menos_unario (296)
+    tk_parentesis_apertura (297) 51 82 83 89 90
+    tk_parentesis_cierre (298) 51 82 83 89 90
+    tk_literal_numerico (299) 53
+    tk_verdadero (300) 58
+    tk_falso (301) 59
+    tk_continuar (302) 67
+    tk_asignacion (303) 72 79
+    tk_si (304) 73
+    tk_fsi (305) 73
+    tk_entonces (306) 73 74
+    tk_sino (307) 74
+    tk_mientras (308) 78
+    tk_fmientras (309) 78
+    tk_hacer (310) 78 79
+    tk_para (311) 79
+    tk_fpara (312) 79
+    tk_hasta (313) 79
+    tk_accion (314) 80
+    tk_faccion (315) 80
+    tk_funcion (316) 81
+    tk_ffuncion (317) 81
+    tk_dev (318) 81 83
+    tk_subrango (319) 22 24
+
+
+No terminales con las reglas donde aparecen
+
+    $accept (65)
+        on left: 0
+    desc_algoritmo (66)
+        on left: 1
+        on right: 0
+    cabecera_alg (67)
+        on left: 2
+        on right: 1
+    bloque_alg (68)
+        on left: 3
+        on right: 1
+    decl_globales (69)
+        on left: 4 5 6
+        on right: 2 4 5
+    decl_a_f (70)
+        on left: 7 8 9
+        on right: 2 7 8
+    bloque (71)
+        on left: 10
+        on right: 3 80 81
+    declaraciones (72)
+        on left: 11 12 14 15
+        on right: 10 11 12 14
+    $@1 (73)
+        on left: 13
+        on right: 14
+    declaracion_tipo (74)
+        on left: 16
+        on right: 4 11
+    declaracion_cte (75)
+        on left: 17
+        on right: 5 12
+    declaracion_var (76)
+        on left: 18
+        on right: 14
+    lista_d_tipo (77)
+        on left: 19 20
+        on right: 16 19
+    d_tipo (78)
+        on left: 21 22 23 24 25 26
+        on right: 19 22 25 29 34 83 86 87 88
+    expresion_t (79)
+        on left: 27 28
+        on right: 22 24
+    lista_campos (80)
+        on left: 29 30
+        on right: 21 29
+    lista_d_cte (81)
+        on left: 31 32
+        on right: 17 31
+    lista_d_var (82)
+        on left: 33 34 35
+        on right: 18 33 34 42 43 83
+    lista_id (83)
+        on left: 36 37 38
+        on right: 33 34 36 86 87 88
+    decl_ent_sal (84)
+        on left: 39 40 41
+        on right: 2
+    decl_ent (85)
+        on left: 42
+        on right: 39 40
+    decl_sal (86)
+        on left: 43
+        on right: 40 41
+    expresion (87)
+        on left: 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60
+        on right: 27 45 46 47 48 49 50 51 54 55 56 57 60 63 72 73 74 78 79 81 91 92
+    operando (88)
+        on left: 61 62 63 64
+        on right: 52 62 63 64 72
+    instrucciones (89)
+        on left: 65 66
+        on right: 10 65 73 74 78 79
+    instruccion (90)
+        on left: 67 68 69 70 71
+        on right: 65 66
+    asignacion (91)
+        on left: 72
+        on right: 68
+    alternativa (92)
+        on left: 73
+        on right: 69
+    lista_opciones (93)
+        on left: 74 75
+        on right: 73 74
+    iteracion (94)
+        on left: 76 77
+        on right: 70
+    it_cota_exp (95)
+        on left: 78
+        on right: 77
+    it_cota_fija (96)
+        on left: 79
+        on right: 76
+    accion_d (97)
+        on left: 80
+        on right: 7
+    funcion_d (98)
+        on left: 81
+        on right: 8
+    a_cabecera (99)
+        on left: 82
+        on right: 80
+    f_cabecera (100)
+        on left: 83
+        on right: 81
+    d_par_form (101)
+        on left: 84 85
+        on right: 82 84
+    d_p_form (102)
+        on left: 86 87 88
+        on right: 84
+    accion_ll (103)
+        on left: 89
+        on right: 71
+    funcion_ll (104)
+        on left: 90
+        on right: 44
+    l_ll (105)
+        on left: 91 92
+        on right: 89 90 91
+
+
+Estado 0
+
+    0 $accept: . desc_algoritmo $end
+
+    tk_algoritmo  desplazar e ir al estado 1
+
+    desc_algoritmo  ir al estado 2
+
+
+Estado 1
+
+    1 desc_algoritmo: tk_algoritmo . tk_identificador tk_punto_coma cabecera_alg bloque_alg tk_falgoritmo tk_punto
+
+    tk_identificador  desplazar e ir al estado 3
+
+
+Estado 2
+
+    0 $accept: desc_algoritmo . $end
+
+    $end  desplazar e ir al estado 4
+
+
+Estado 3
+
+    1 desc_algoritmo: tk_algoritmo tk_identificador . tk_punto_coma cabecera_alg bloque_alg tk_falgoritmo tk_punto
+
+    tk_punto_coma  desplazar e ir al estado 5
+
+
+Estado 4
+
+    0 $accept: desc_algoritmo $end .
+
+    $default  aceptar
+
+
+Estado 5
+
+    1 desc_algoritmo: tk_algoritmo tk_identificador tk_punto_coma . cabecera_alg bloque_alg tk_falgoritmo tk_punto
+
+    tk_tipo   desplazar e ir al estado 6
+    tk_const  desplazar e ir al estado 7
+
+    $default  reduce usando la regla 6 (decl_globales)
+
+    cabecera_alg      ir al estado 8
+    decl_globales     ir al estado 9
+    declaracion_tipo  ir al estado 10
+    declaracion_cte   ir al estado 11
+
+
+Estado 6
+
+   16 declaracion_tipo: tk_tipo . lista_d_tipo tk_ftipo tk_punto_coma
+
+    tk_identificador  desplazar e ir al estado 12
+
+    $default  reduce usando la regla 20 (lista_d_tipo)
+
+    lista_d_tipo  ir al estado 13
+
+
+Estado 7
+
+   17 declaracion_cte: tk_const . lista_d_cte tk_fconst tk_punto_coma
+
+    tk_identificador  desplazar e ir al estado 14
+
+    $default  reduce usando la regla 32 (lista_d_cte)
+
+    lista_d_cte  ir al estado 15
+
+
+Estado 8
+
+    1 desc_algoritmo: tk_algoritmo tk_identificador tk_punto_coma cabecera_alg . bloque_alg tk_falgoritmo tk_punto
+
+    tk_tipo   desplazar e ir al estado 6
+    tk_const  desplazar e ir al estado 7
+    tk_var    desplazar e ir al estado 16
+
+    $default  reduce usando la regla 15 (declaraciones)
+
+    bloque_alg        ir al estado 17
+    bloque            ir al estado 18
+    declaraciones     ir al estado 19
+    declaracion_tipo  ir al estado 20
+    declaracion_cte   ir al estado 21
+    declaracion_var   ir al estado 22
+
+
+Estado 9
+
+    2 cabecera_alg: decl_globales . decl_a_f decl_ent_sal tk_comentario
+
+    tk_accion   desplazar e ir al estado 23
+    tk_funcion  desplazar e ir al estado 24
+
+    $default  reduce usando la regla 9 (decl_a_f)
+
+    decl_a_f   ir al estado 25
+    accion_d   ir al estado 26
+    funcion_d  ir al estado 27
+
+
+Estado 10
+
+    4 decl_globales: declaracion_tipo . decl_globales
+
+    tk_tipo   desplazar e ir al estado 6
+    tk_const  desplazar e ir al estado 7
+
+    $default  reduce usando la regla 6 (decl_globales)
+
+    decl_globales     ir al estado 28
+    declaracion_tipo  ir al estado 10
+    declaracion_cte   ir al estado 11
+
+
+Estado 11
+
+    5 decl_globales: declaracion_cte . decl_globales
+
+    tk_tipo   desplazar e ir al estado 6
+    tk_const  desplazar e ir al estado 7
+
+    $default  reduce usando la regla 6 (decl_globales)
+
+    decl_globales     ir al estado 29
+    declaracion_tipo  ir al estado 10
+    declaracion_cte   ir al estado 11
+
+
+Estado 12
+
+   19 lista_d_tipo: tk_identificador . tk_igual d_tipo tk_punto_coma lista_d_tipo
+
+    tk_igual  desplazar e ir al estado 30
+
+
+Estado 13
+
+   16 declaracion_tipo: tk_tipo lista_d_tipo . tk_ftipo tk_punto_coma
+
+    tk_ftipo  desplazar e ir al estado 31
+
+
+Estado 14
+
+   31 lista_d_cte: tk_identificador . tk_igual tk_literal tk_punto_coma lista_d_cte
+
+    tk_igual  desplazar e ir al estado 32
+
+
+Estado 15
+
+   17 declaracion_cte: tk_const lista_d_cte . tk_fconst tk_punto_coma
+
+    tk_fconst  desplazar e ir al estado 33
+
+
+Estado 16
+
+   18 declaracion_var: tk_var . lista_d_var tk_fvar tk_punto_coma
+
+    tk_identificador  desplazar e ir al estado 34
+
+    tk_dospuntos  reduce usando la regla 38 (lista_id)
+    $default      reduce usando la regla 35 (lista_d_var)
+
+    lista_d_var  ir al estado 35
+    lista_id     ir al estado 36
+
+
+Estado 17
+
+    1 desc_algoritmo: tk_algoritmo tk_identificador tk_punto_coma cabecera_alg bloque_alg . tk_falgoritmo tk_punto
+
+    tk_falgoritmo  desplazar e ir al estado 37
+
+
+Estado 18
+
+    3 bloque_alg: bloque . tk_comentario
+
+    tk_comentario  desplazar e ir al estado 38
+
+
+Estado 19
+
+   10 bloque: declaraciones . instrucciones
+
+    tk_identificador  desplazar e ir al estado 39
+    tk_continuar      desplazar e ir al estado 40
+    tk_si             desplazar e ir al estado 41
+    tk_mientras       desplazar e ir al estado 42
+    tk_para           desplazar e ir al estado 43
+
+    operando       ir al estado 44
+    instrucciones  ir al estado 45
+    instruccion    ir al estado 46
+    asignacion     ir al estado 47
+    alternativa    ir al estado 48
+    iteracion      ir al estado 49
+    it_cota_exp    ir al estado 50
+    it_cota_fija   ir al estado 51
+    accion_ll      ir al estado 52
+
+
+Estado 20
+
+   11 declaraciones: declaracion_tipo . declaraciones
+
+    tk_tipo   desplazar e ir al estado 6
+    tk_const  desplazar e ir al estado 7
+    tk_var    desplazar e ir al estado 16
+
+    $default  reduce usando la regla 15 (declaraciones)
+
+    declaraciones     ir al estado 53
+    declaracion_tipo  ir al estado 20
+    declaracion_cte   ir al estado 21
+    declaracion_var   ir al estado 22
+
+
+Estado 21
+
+   12 declaraciones: declaracion_cte . declaraciones
+
+    tk_tipo   desplazar e ir al estado 6
+    tk_const  desplazar e ir al estado 7
+    tk_var    desplazar e ir al estado 16
+
+    $default  reduce usando la regla 15 (declaraciones)
+
+    declaraciones     ir al estado 54
+    declaracion_tipo  ir al estado 20
+    declaracion_cte   ir al estado 21
+    declaracion_var   ir al estado 22
+
+
+Estado 22
+
+   14 declaraciones: declaracion_var . declaraciones $@1
+
+    tk_tipo   desplazar e ir al estado 6
+    tk_const  desplazar e ir al estado 7
+    tk_var    desplazar e ir al estado 16
+
+    $default  reduce usando la regla 15 (declaraciones)
+
+    declaraciones     ir al estado 55
+    declaracion_tipo  ir al estado 20
+    declaracion_cte   ir al estado 21
+    declaracion_var   ir al estado 22
+
+
+Estado 23
+
+   80 accion_d: tk_accion . a_cabecera bloque tk_faccion
+
+    tk_identificador  desplazar e ir al estado 56
+
+    a_cabecera  ir al estado 57
+
+
+Estado 24
+
+   81 funcion_d: tk_funcion . f_cabecera bloque tk_dev expresion tk_ffuncion
+
+    tk_identificador  desplazar e ir al estado 58
+
+    f_cabecera  ir al estado 59
+
+
+Estado 25
+
+    2 cabecera_alg: decl_globales decl_a_f . decl_ent_sal tk_comentario
+
+    tk_ent  desplazar e ir al estado 60
+    tk_sal  desplazar e ir al estado 61
+
+    decl_ent_sal  ir al estado 62
+    decl_ent      ir al estado 63
+    decl_sal      ir al estado 64
+
+
+Estado 26
+
+    7 decl_a_f: accion_d . decl_a_f
+
+    tk_accion   desplazar e ir al estado 23
+    tk_funcion  desplazar e ir al estado 24
+
+    $default  reduce usando la regla 9 (decl_a_f)
+
+    decl_a_f   ir al estado 65
+    accion_d   ir al estado 26
+    funcion_d  ir al estado 27
+
+
+Estado 27
+
+    8 decl_a_f: funcion_d . decl_a_f
+
+    tk_accion   desplazar e ir al estado 23
+    tk_funcion  desplazar e ir al estado 24
+
+    $default  reduce usando la regla 9 (decl_a_f)
+
+    decl_a_f   ir al estado 66
+    accion_d   ir al estado 26
+    funcion_d  ir al estado 27
+
+
+Estado 28
+
+    4 decl_globales: declaracion_tipo decl_globales .
+
+    $default  reduce usando la regla 4 (decl_globales)
+
+
+Estado 29
+
+    5 decl_globales: declaracion_cte decl_globales .
+
+    $default  reduce usando la regla 5 (decl_globales)
+
+
+Estado 30
+
+   19 lista_d_tipo: tk_identificador tk_igual . d_tipo tk_punto_coma lista_d_tipo
+
+    tk_identificador        desplazar e ir al estado 67
+    tk_tupla                desplazar e ir al estado 68
+    tk_tabla                desplazar e ir al estado 69
+    tk_ref                  desplazar e ir al estado 70
+    tk_tipo_base            desplazar e ir al estado 71
+    tk_literal_caracter     desplazar e ir al estado 72
+    tk_resta                desplazar e ir al estado 73
+    tk_NOT                  desplazar e ir al estado 74
+    tk_parentesis_apertura  desplazar e ir al estado 75
+    tk_literal_numerico     desplazar e ir al estado 76
+    tk_verdadero            desplazar e ir al estado 77
+    tk_falso                desplazar e ir al estado 78
+
+    d_tipo       ir al estado 79
+    expresion_t  ir al estado 80
+    expresion    ir al estado 81
+    operando     ir al estado 82
+    funcion_ll   ir al estado 83
+
+
+Estado 31
+
+   16 declaracion_tipo: tk_tipo lista_d_tipo tk_ftipo . tk_punto_coma
+
+    tk_punto_coma  desplazar e ir al estado 84
+
+
+Estado 32
+
+   31 lista_d_cte: tk_identificador tk_igual . tk_literal tk_punto_coma lista_d_cte
+
+    tk_literal  desplazar e ir al estado 85
+
+
+Estado 33
+
+   17 declaracion_cte: tk_const lista_d_cte tk_fconst . tk_punto_coma
+
+    tk_punto_coma  desplazar e ir al estado 86
+
+
+Estado 34
+
+   36 lista_id: tk_identificador . tk_coma lista_id
+   37         | tk_identificador .
+
+    tk_coma  desplazar e ir al estado 87
+
+    $default  reduce usando la regla 37 (lista_id)
+
+
+Estado 35
+
+   18 declaracion_var: tk_var lista_d_var . tk_fvar tk_punto_coma
+
+    tk_fvar  desplazar e ir al estado 88
+
+
+Estado 36
+
+   33 lista_d_var: lista_id . tk_dospuntos tk_identificador tk_punto_coma lista_d_var
+   34            | lista_id . tk_dospuntos d_tipo tk_punto_coma lista_d_var
+
+    tk_dospuntos  desplazar e ir al estado 89
+
+
+Estado 37
+
+    1 desc_algoritmo: tk_algoritmo tk_identificador tk_punto_coma cabecera_alg bloque_alg tk_falgoritmo . tk_punto
+
+    tk_punto  desplazar e ir al estado 90
+
+
+Estado 38
+
+    3 bloque_alg: bloque tk_comentario .
+
+    $default  reduce usando la regla 3 (bloque_alg)
+
+
+Estado 39
+
+   61 operando: tk_identificador .
+   89 accion_ll: tk_identificador . tk_parentesis_apertura l_ll tk_parentesis_cierre
+
+    tk_parentesis_apertura  desplazar e ir al estado 91
+
+    $default  reduce usando la regla 61 (operando)
+
+
+Estado 40
+
+   67 instruccion: tk_continuar .
+
+    $default  reduce usando la regla 67 (instruccion)
+
+
+Estado 41
+
+   73 alternativa: tk_si . expresion tk_entonces instrucciones lista_opciones tk_fsi
+
+    tk_identificador        desplazar e ir al estado 92
+    tk_resta                desplazar e ir al estado 73
+    tk_NOT                  desplazar e ir al estado 74
+    tk_parentesis_apertura  desplazar e ir al estado 75
+    tk_literal_numerico     desplazar e ir al estado 76
+    tk_verdadero            desplazar e ir al estado 77
+    tk_falso                desplazar e ir al estado 78
+
+    expresion   ir al estado 93
+    operando    ir al estado 82
+    funcion_ll  ir al estado 83
+
+
+Estado 42
+
+   78 it_cota_exp: tk_mientras . expresion tk_hacer instrucciones tk_fmientras
+
+    tk_identificador        desplazar e ir al estado 92
+    tk_resta                desplazar e ir al estado 73
+    tk_NOT                  desplazar e ir al estado 74
+    tk_parentesis_apertura  desplazar e ir al estado 75
+    tk_literal_numerico     desplazar e ir al estado 76
+    tk_verdadero            desplazar e ir al estado 77
+    tk_falso                desplazar e ir al estado 78
+
+    expresion   ir al estado 94
+    operando    ir al estado 82
+    funcion_ll  ir al estado 83
+
+
+Estado 43
+
+   79 it_cota_fija: tk_para . tk_identificador tk_asignacion expresion tk_hasta expresion tk_hacer instrucciones tk_fpara
+
+    tk_identificador  desplazar e ir al estado 95
+
+
+Estado 44
+
+   62 operando: operando . tk_punto operando
+   63         | operando . tk_corchete_abierto expresion tk_corchete_cerrado
+   64         | operando . tk_ref
+   72 asignacion: operando . tk_asignacion expresion
+
+    tk_punto             desplazar e ir al estado 96
+    tk_corchete_abierto  desplazar e ir al estado 97
+    tk_ref               desplazar e ir al estado 98
+    tk_asignacion        desplazar e ir al estado 99
+
+
+Estado 45
+
+   10 bloque: declaraciones instrucciones .
+
+    $default  reduce usando la regla 10 (bloque)
+
+
+Estado 46
+
+   65 instrucciones: instruccion . tk_punto_coma instrucciones
+   66              | instruccion .
+
+    tk_punto_coma  desplazar e ir al estado 100
+
+    $default  reduce usando la regla 66 (instrucciones)
+
+
+Estado 47
+
+   68 instruccion: asignacion .
+
+    $default  reduce usando la regla 68 (instruccion)
+
+
+Estado 48
+
+   69 instruccion: alternativa .
+
+    $default  reduce usando la regla 69 (instruccion)
+
+
+Estado 49
+
+   70 instruccion: iteracion .
+
+    $default  reduce usando la regla 70 (instruccion)
+
+
+Estado 50
+
+   77 iteracion: it_cota_exp .
+
+    $default  reduce usando la regla 77 (iteracion)
+
+
+Estado 51
+
+   76 iteracion: it_cota_fija .
+
+    $default  reduce usando la regla 76 (iteracion)
+
+
+Estado 52
+
+   71 instruccion: accion_ll .
+
+    $default  reduce usando la regla 71 (instruccion)
+
+
+Estado 53
+
+   11 declaraciones: declaracion_tipo declaraciones .
+
+    $default  reduce usando la regla 11 (declaraciones)
+
+
+Estado 54
+
+   12 declaraciones: declaracion_cte declaraciones .
+
+    $default  reduce usando la regla 12 (declaraciones)
+
+
+Estado 55
+
+   14 declaraciones: declaracion_var declaraciones . $@1
+
+    $default  reduce usando la regla 13 ($@1)
+
+    $@1  ir al estado 101
+
+
+Estado 56
+
+   82 a_cabecera: tk_identificador . tk_parentesis_apertura d_par_form tk_parentesis_cierre tk_punto_coma
+
+    tk_parentesis_apertura  desplazar e ir al estado 102
+
+
+Estado 57
+
+   80 accion_d: tk_accion a_cabecera . bloque tk_faccion
+
+    tk_tipo   desplazar e ir al estado 6
+    tk_const  desplazar e ir al estado 7
+    tk_var    desplazar e ir al estado 16
+
+    $default  reduce usando la regla 15 (declaraciones)
+
+    bloque            ir al estado 103
+    declaraciones     ir al estado 19
+    declaracion_tipo  ir al estado 20
+    declaracion_cte   ir al estado 21
+    declaracion_var   ir al estado 22
+
+
+Estado 58
+
+   83 f_cabecera: tk_identificador . tk_parentesis_apertura lista_d_var tk_parentesis_cierre tk_dev d_tipo tk_punto_coma
+
+    tk_parentesis_apertura  desplazar e ir al estado 104
+
+
+Estado 59
+
+   81 funcion_d: tk_funcion f_cabecera . bloque tk_dev expresion tk_ffuncion
+
+    tk_tipo   desplazar e ir al estado 6
+    tk_const  desplazar e ir al estado 7
+    tk_var    desplazar e ir al estado 16
+
+    $default  reduce usando la regla 15 (declaraciones)
+
+    bloque            ir al estado 105
+    declaraciones     ir al estado 19
+    declaracion_tipo  ir al estado 20
+    declaracion_cte   ir al estado 21
+    declaracion_var   ir al estado 22
+
+
+Estado 60
+
+   42 decl_ent: tk_ent . lista_d_var
+
+    tk_identificador  desplazar e ir al estado 34
+
+    tk_dospuntos  reduce usando la regla 38 (lista_id)
+    $default      reduce usando la regla 35 (lista_d_var)
+
+    lista_d_var  ir al estado 106
+    lista_id     ir al estado 36
+
+
+Estado 61
+
+   43 decl_sal: tk_sal . lista_d_var
+
+    tk_identificador  desplazar e ir al estado 34
+
+    tk_dospuntos  reduce usando la regla 38 (lista_id)
+    $default      reduce usando la regla 35 (lista_d_var)
+
+    lista_d_var  ir al estado 107
+    lista_id     ir al estado 36
+
+
+Estado 62
+
+    2 cabecera_alg: decl_globales decl_a_f decl_ent_sal . tk_comentario
+
+    tk_comentario  desplazar e ir al estado 108
+
+
+Estado 63
+
+   39 decl_ent_sal: decl_ent .
+   40             | decl_ent . decl_sal
+
+    tk_sal  desplazar e ir al estado 61
+
+    $default  reduce usando la regla 39 (decl_ent_sal)
+
+    decl_sal  ir al estado 109
+
+
+Estado 64
+
+   41 decl_ent_sal: decl_sal .
+
+    $default  reduce usando la regla 41 (decl_ent_sal)
+
+
+Estado 65
+
+    7 decl_a_f: accion_d decl_a_f .
+
+    $default  reduce usando la regla 7 (decl_a_f)
+
+
+Estado 66
+
+    8 decl_a_f: funcion_d decl_a_f .
+
+    $default  reduce usando la regla 8 (decl_a_f)
+
+
+Estado 67
+
+   23 d_tipo: tk_identificador .
+   61 operando: tk_identificador .
+   90 funcion_ll: tk_identificador . tk_parentesis_apertura l_ll tk_parentesis_cierre
+
+    tk_parentesis_apertura  desplazar e ir al estado 110
+
+    tk_punto_coma  reduce usando la regla 23 (d_tipo)
+    tk_punto       reduce usando la regla 23 (d_tipo)
+    tk_punto       [reduce usando la regla 61 (operando)]
+    $default       reduce usando la regla 61 (operando)
+
+
+Estado 68
+
+   21 d_tipo: tk_tupla . lista_campos tk_ftupla
+
+    tk_identificador  desplazar e ir al estado 111
+
+    $default  reduce usando la regla 30 (lista_campos)
+
+    lista_campos  ir al estado 112
+
+
+Estado 69
+
+   22 d_tipo: tk_tabla . tk_corchete_abierto expresion_t tk_subrango expresion_t tk_corchete_cerrado tk_de d_tipo
+
+    tk_corchete_abierto  desplazar e ir al estado 113
+
+
+Estado 70
+
+   25 d_tipo: tk_ref . d_tipo
+
+    tk_identificador        desplazar e ir al estado 67
+    tk_tupla                desplazar e ir al estado 68
+    tk_tabla                desplazar e ir al estado 69
+    tk_ref                  desplazar e ir al estado 70
+    tk_tipo_base            desplazar e ir al estado 71
+    tk_literal_caracter     desplazar e ir al estado 72
+    tk_resta                desplazar e ir al estado 73
+    tk_NOT                  desplazar e ir al estado 74
+    tk_parentesis_apertura  desplazar e ir al estado 75
+    tk_literal_numerico     desplazar e ir al estado 76
+    tk_verdadero            desplazar e ir al estado 77
+    tk_falso                desplazar e ir al estado 78
+
+    d_tipo       ir al estado 114
+    expresion_t  ir al estado 80
+    expresion    ir al estado 81
+    operando     ir al estado 82
+    funcion_ll   ir al estado 83
+
+
+Estado 71
+
+   26 d_tipo: tk_tipo_base .
+
+    $default  reduce usando la regla 26 (d_tipo)
+
+
+Estado 72
+
+   28 expresion_t: tk_literal_caracter .
+
+    $default  reduce usando la regla 28 (expresion_t)
+
+
+Estado 73
+
+   54 expresion: tk_resta . expresion
+
+    tk_identificador        desplazar e ir al estado 92
+    tk_resta                desplazar e ir al estado 73
+    tk_NOT                  desplazar e ir al estado 74
+    tk_parentesis_apertura  desplazar e ir al estado 75
+    tk_literal_numerico     desplazar e ir al estado 76
+    tk_verdadero            desplazar e ir al estado 77
+    tk_falso                desplazar e ir al estado 78
+
+    expresion   ir al estado 115
+    operando    ir al estado 82
+    funcion_ll  ir al estado 83
+
+
+Estado 74
+
+   57 expresion: tk_NOT . expresion
+
+    tk_identificador        desplazar e ir al estado 92
+    tk_resta                desplazar e ir al estado 73
+    tk_NOT                  desplazar e ir al estado 74
+    tk_parentesis_apertura  desplazar e ir al estado 75
+    tk_literal_numerico     desplazar e ir al estado 76
+    tk_verdadero            desplazar e ir al estado 77
+    tk_falso                desplazar e ir al estado 78
+
+    expresion   ir al estado 116
+    operando    ir al estado 82
+    funcion_ll  ir al estado 83
+
+
+Estado 75
+
+   51 expresion: tk_parentesis_apertura . expresion tk_parentesis_cierre
+
+    tk_identificador        desplazar e ir al estado 92
+    tk_resta                desplazar e ir al estado 73
+    tk_NOT                  desplazar e ir al estado 74
+    tk_parentesis_apertura  desplazar e ir al estado 75
+    tk_literal_numerico     desplazar e ir al estado 76
+    tk_verdadero            desplazar e ir al estado 77
+    tk_falso                desplazar e ir al estado 78
+
+    expresion   ir al estado 117
+    operando    ir al estado 82
+    funcion_ll  ir al estado 83
+
+
+Estado 76
+
+   53 expresion: tk_literal_numerico .
+
+    $default  reduce usando la regla 53 (expresion)
+
+
+Estado 77
+
+   58 expresion: tk_verdadero .
+
+    $default  reduce usando la regla 58 (expresion)
+
+
+Estado 78
+
+   59 expresion: tk_falso .
+
+    $default  reduce usando la regla 59 (expresion)
+
+
+Estado 79
+
+   19 lista_d_tipo: tk_identificador tk_igual d_tipo . tk_punto_coma lista_d_tipo
+
+    tk_punto_coma  desplazar e ir al estado 118
+
+
+Estado 80
+
+   24 d_tipo: expresion_t . tk_subrango expresion_t
+
+    tk_subrango  desplazar e ir al estado 119
+
+
+Estado 81
+
+   27 expresion_t: expresion .
+   45 expresion: expresion . tk_suma expresion
+   46          | expresion . tk_resta expresion
+   47          | expresion . tk_multiplicacion expresion
+   48          | expresion . tk_division expresion
+   49          | expresion . tk_modulo expresion
+   50          | expresion . tk_div expresion
+   55          | expresion . tk_AND expresion
+   56          | expresion . tk_OR expresion
+   60          | expresion . tk_operador_relacional expresion
+
+    tk_suma                 desplazar e ir al estado 120
+    tk_resta                desplazar e ir al estado 121
+    tk_AND                  desplazar e ir al estado 122
+    tk_OR                   desplazar e ir al estado 123
+    tk_multiplicacion       desplazar e ir al estado 124
+    tk_division             desplazar e ir al estado 125
+    tk_modulo               desplazar e ir al estado 126
+    tk_div                  desplazar e ir al estado 127
+    tk_operador_relacional  desplazar e ir al estado 128
+
+    $default  reduce usando la regla 27 (expresion_t)
+
+
+Estado 82
+
+   52 expresion: operando .
+   62 operando: operando . tk_punto operando
+   63         | operando . tk_corchete_abierto expresion tk_corchete_cerrado
+   64         | operando . tk_ref
+
+    tk_punto             desplazar e ir al estado 96
+    tk_corchete_abierto  desplazar e ir al estado 97
+    tk_ref               desplazar e ir al estado 98
+
+    tk_punto  [reduce usando la regla 52 (expresion)]
+    $default  reduce usando la regla 52 (expresion)
+
+
+Estado 83
+
+   44 expresion: funcion_ll .
+
+    $default  reduce usando la regla 44 (expresion)
+
+
+Estado 84
+
+   16 declaracion_tipo: tk_tipo lista_d_tipo tk_ftipo tk_punto_coma .
+
+    $default  reduce usando la regla 16 (declaracion_tipo)
+
+
+Estado 85
+
+   31 lista_d_cte: tk_identificador tk_igual tk_literal . tk_punto_coma lista_d_cte
+
+    tk_punto_coma  desplazar e ir al estado 129
+
+
+Estado 86
+
+   17 declaracion_cte: tk_const lista_d_cte tk_fconst tk_punto_coma .
+
+    $default  reduce usando la regla 17 (declaracion_cte)
+
+
+Estado 87
+
+   36 lista_id: tk_identificador tk_coma . lista_id
+
+    tk_identificador  desplazar e ir al estado 34
+
+    $default  reduce usando la regla 38 (lista_id)
+
+    lista_id  ir al estado 130
+
+
+Estado 88
+
+   18 declaracion_var: tk_var lista_d_var tk_fvar . tk_punto_coma
+
+    tk_punto_coma  desplazar e ir al estado 131
+
+
+Estado 89
+
+   33 lista_d_var: lista_id tk_dospuntos . tk_identificador tk_punto_coma lista_d_var
+   34            | lista_id tk_dospuntos . d_tipo tk_punto_coma lista_d_var
+
+    tk_identificador        desplazar e ir al estado 132
+    tk_tupla                desplazar e ir al estado 68
+    tk_tabla                desplazar e ir al estado 69
+    tk_ref                  desplazar e ir al estado 70
+    tk_tipo_base            desplazar e ir al estado 71
+    tk_literal_caracter     desplazar e ir al estado 72
+    tk_resta                desplazar e ir al estado 73
+    tk_NOT                  desplazar e ir al estado 74
+    tk_parentesis_apertura  desplazar e ir al estado 75
+    tk_literal_numerico     desplazar e ir al estado 76
+    tk_verdadero            desplazar e ir al estado 77
+    tk_falso                desplazar e ir al estado 78
+
+    d_tipo       ir al estado 133
+    expresion_t  ir al estado 80
+    expresion    ir al estado 81
+    operando     ir al estado 82
+    funcion_ll   ir al estado 83
+
+
+Estado 90
+
+    1 desc_algoritmo: tk_algoritmo tk_identificador tk_punto_coma cabecera_alg bloque_alg tk_falgoritmo tk_punto .
+
+    $default  reduce usando la regla 1 (desc_algoritmo)
+
+
+Estado 91
+
+   89 accion_ll: tk_identificador tk_parentesis_apertura . l_ll tk_parentesis_cierre
+
+    tk_identificador        desplazar e ir al estado 92
+    tk_resta                desplazar e ir al estado 73
+    tk_NOT                  desplazar e ir al estado 74
+    tk_parentesis_apertura  desplazar e ir al estado 75
+    tk_literal_numerico     desplazar e ir al estado 76
+    tk_verdadero            desplazar e ir al estado 77
+    tk_falso                desplazar e ir al estado 78
+
+    expresion   ir al estado 134
+    operando    ir al estado 82
+    funcion_ll  ir al estado 83
+    l_ll        ir al estado 135
+
+
+Estado 92
+
+   61 operando: tk_identificador .
+   90 funcion_ll: tk_identificador . tk_parentesis_apertura l_ll tk_parentesis_cierre
+
+    tk_parentesis_apertura  desplazar e ir al estado 110
+
+    $default  reduce usando la regla 61 (operando)
+
+
+Estado 93
+
+   45 expresion: expresion . tk_suma expresion
+   46          | expresion . tk_resta expresion
+   47          | expresion . tk_multiplicacion expresion
+   48          | expresion . tk_division expresion
+   49          | expresion . tk_modulo expresion
+   50          | expresion . tk_div expresion
+   55          | expresion . tk_AND expresion
+   56          | expresion . tk_OR expresion
+   60          | expresion . tk_operador_relacional expresion
+   73 alternativa: tk_si expresion . tk_entonces instrucciones lista_opciones tk_fsi
+
+    tk_suma                 desplazar e ir al estado 120
+    tk_resta                desplazar e ir al estado 121
+    tk_AND                  desplazar e ir al estado 122
+    tk_OR                   desplazar e ir al estado 123
+    tk_multiplicacion       desplazar e ir al estado 124
+    tk_division             desplazar e ir al estado 125
+    tk_modulo               desplazar e ir al estado 126
+    tk_div                  desplazar e ir al estado 127
+    tk_operador_relacional  desplazar e ir al estado 128
+    tk_entonces             desplazar e ir al estado 136
+
+
+Estado 94
+
+   45 expresion: expresion . tk_suma expresion
+   46          | expresion . tk_resta expresion
+   47          | expresion . tk_multiplicacion expresion
+   48          | expresion . tk_division expresion
+   49          | expresion . tk_modulo expresion
+   50          | expresion . tk_div expresion
+   55          | expresion . tk_AND expresion
+   56          | expresion . tk_OR expresion
+   60          | expresion . tk_operador_relacional expresion
+   78 it_cota_exp: tk_mientras expresion . tk_hacer instrucciones tk_fmientras
+
+    tk_suma                 desplazar e ir al estado 120
+    tk_resta                desplazar e ir al estado 121
+    tk_AND                  desplazar e ir al estado 122
+    tk_OR                   desplazar e ir al estado 123
+    tk_multiplicacion       desplazar e ir al estado 124
+    tk_division             desplazar e ir al estado 125
+    tk_modulo               desplazar e ir al estado 126
+    tk_div                  desplazar e ir al estado 127
+    tk_operador_relacional  desplazar e ir al estado 128
+    tk_hacer                desplazar e ir al estado 137
+
+
+Estado 95
+
+   79 it_cota_fija: tk_para tk_identificador . tk_asignacion expresion tk_hasta expresion tk_hacer instrucciones tk_fpara
+
+    tk_asignacion  desplazar e ir al estado 138
+
+
+Estado 96
+
+   62 operando: operando tk_punto . operando
+
+    tk_identificador  desplazar e ir al estado 139
+
+    operando  ir al estado 140
+
+
+Estado 97
+
+   63 operando: operando tk_corchete_abierto . expresion tk_corchete_cerrado
+
+    tk_identificador        desplazar e ir al estado 92
+    tk_resta                desplazar e ir al estado 73
+    tk_NOT                  desplazar e ir al estado 74
+    tk_parentesis_apertura  desplazar e ir al estado 75
+    tk_literal_numerico     desplazar e ir al estado 76
+    tk_verdadero            desplazar e ir al estado 77
+    tk_falso                desplazar e ir al estado 78
+
+    expresion   ir al estado 141
+    operando    ir al estado 82
+    funcion_ll  ir al estado 83
+
+
+Estado 98
+
+   64 operando: operando tk_ref .
+
+    $default  reduce usando la regla 64 (operando)
+
+
+Estado 99
+
+   72 asignacion: operando tk_asignacion . expresion
+
+    tk_identificador        desplazar e ir al estado 92
+    tk_resta                desplazar e ir al estado 73
+    tk_NOT                  desplazar e ir al estado 74
+    tk_parentesis_apertura  desplazar e ir al estado 75
+    tk_literal_numerico     desplazar e ir al estado 76
+    tk_verdadero            desplazar e ir al estado 77
+    tk_falso                desplazar e ir al estado 78
+
+    expresion   ir al estado 142
+    operando    ir al estado 82
+    funcion_ll  ir al estado 83
+
+
+Estado 100
+
+   65 instrucciones: instruccion tk_punto_coma . instrucciones
+
+    tk_identificador  desplazar e ir al estado 39
+    tk_continuar      desplazar e ir al estado 40
+    tk_si             desplazar e ir al estado 41
+    tk_mientras       desplazar e ir al estado 42
+    tk_para           desplazar e ir al estado 43
+
+    operando       ir al estado 44
+    instrucciones  ir al estado 143
+    instruccion    ir al estado 46
+    asignacion     ir al estado 47
+    alternativa    ir al estado 48
+    iteracion      ir al estado 49
+    it_cota_exp    ir al estado 50
+    it_cota_fija   ir al estado 51
+    accion_ll      ir al estado 52
+
+
+Estado 101
+
+   14 declaraciones: declaracion_var declaraciones $@1 .
+
+    $default  reduce usando la regla 14 (declaraciones)
+
+
+Estado 102
+
+   82 a_cabecera: tk_identificador tk_parentesis_apertura . d_par_form tk_parentesis_cierre tk_punto_coma
+
+    tk_ent      desplazar e ir al estado 144
+    tk_sal      desplazar e ir al estado 145
+    tk_ent_sal  desplazar e ir al estado 146
+
+    $default  reduce usando la regla 85 (d_par_form)
+
+    d_par_form  ir al estado 147
+    d_p_form    ir al estado 148
+
+
+Estado 103
+
+   80 accion_d: tk_accion a_cabecera bloque . tk_faccion
+
+    tk_faccion  desplazar e ir al estado 149
+
+
+Estado 104
+
+   83 f_cabecera: tk_identificador tk_parentesis_apertura . lista_d_var tk_parentesis_cierre tk_dev d_tipo tk_punto_coma
+
+    tk_identificador  desplazar e ir al estado 34
+
+    tk_dospuntos  reduce usando la regla 38 (lista_id)
+    $default      reduce usando la regla 35 (lista_d_var)
+
+    lista_d_var  ir al estado 150
+    lista_id     ir al estado 36
+
+
+Estado 105
+
+   81 funcion_d: tk_funcion f_cabecera bloque . tk_dev expresion tk_ffuncion
+
+    tk_dev  desplazar e ir al estado 151
+
+
+Estado 106
+
+   42 decl_ent: tk_ent lista_d_var .
+
+    $default  reduce usando la regla 42 (decl_ent)
+
+
+Estado 107
+
+   43 decl_sal: tk_sal lista_d_var .
+
+    $default  reduce usando la regla 43 (decl_sal)
+
+
+Estado 108
+
+    2 cabecera_alg: decl_globales decl_a_f decl_ent_sal tk_comentario .
+
+    $default  reduce usando la regla 2 (cabecera_alg)
+
+
+Estado 109
+
+   40 decl_ent_sal: decl_ent decl_sal .
+
+    $default  reduce usando la regla 40 (decl_ent_sal)
+
+
+Estado 110
+
+   90 funcion_ll: tk_identificador tk_parentesis_apertura . l_ll tk_parentesis_cierre
+
+    tk_identificador        desplazar e ir al estado 92
+    tk_resta                desplazar e ir al estado 73
+    tk_NOT                  desplazar e ir al estado 74
+    tk_parentesis_apertura  desplazar e ir al estado 75
+    tk_literal_numerico     desplazar e ir al estado 76
+    tk_verdadero            desplazar e ir al estado 77
+    tk_falso                desplazar e ir al estado 78
+
+    expresion   ir al estado 134
+    operando    ir al estado 82
+    funcion_ll  ir al estado 83
+    l_ll        ir al estado 152
+
+
+Estado 111
+
+   29 lista_campos: tk_identificador . tk_dospuntos d_tipo tk_punto lista_campos
+
+    tk_dospuntos  desplazar e ir al estado 153
+
+
+Estado 112
+
+   21 d_tipo: tk_tupla lista_campos . tk_ftupla
+
+    tk_ftupla  desplazar e ir al estado 154
+
+
+Estado 113
+
+   22 d_tipo: tk_tabla tk_corchete_abierto . expresion_t tk_subrango expresion_t tk_corchete_cerrado tk_de d_tipo
+
+    tk_identificador        desplazar e ir al estado 92
+    tk_literal_caracter     desplazar e ir al estado 72
+    tk_resta                desplazar e ir al estado 73
+    tk_NOT                  desplazar e ir al estado 74
+    tk_parentesis_apertura  desplazar e ir al estado 75
+    tk_literal_numerico     desplazar e ir al estado 76
+    tk_verdadero            desplazar e ir al estado 77
+    tk_falso                desplazar e ir al estado 78
+
+    expresion_t  ir al estado 155
+    expresion    ir al estado 81
+    operando     ir al estado 82
+    funcion_ll   ir al estado 83
+
+
+Estado 114
+
+   25 d_tipo: tk_ref d_tipo .
+
+    $default  reduce usando la regla 25 (d_tipo)
+
+
+Estado 115
+
+   45 expresion: expresion . tk_suma expresion
+   46          | expresion . tk_resta expresion
+   47          | expresion . tk_multiplicacion expresion
+   48          | expresion . tk_division expresion
+   49          | expresion . tk_modulo expresion
+   50          | expresion . tk_div expresion
+   54          | tk_resta expresion .
+   55          | expresion . tk_AND expresion
+   56          | expresion . tk_OR expresion
+   60          | expresion . tk_operador_relacional expresion
+
+    $default  reduce usando la regla 54 (expresion)
+
+
+Estado 116
+
+   45 expresion: expresion . tk_suma expresion
+   46          | expresion . tk_resta expresion
+   47          | expresion . tk_multiplicacion expresion
+   48          | expresion . tk_division expresion
+   49          | expresion . tk_modulo expresion
+   50          | expresion . tk_div expresion
+   55          | expresion . tk_AND expresion
+   56          | expresion . tk_OR expresion
+   57          | tk_NOT expresion .
+   60          | expresion . tk_operador_relacional expresion
+
+    $default  reduce usando la regla 57 (expresion)
+
+
+Estado 117
+
+   45 expresion: expresion . tk_suma expresion
+   46          | expresion . tk_resta expresion
+   47          | expresion . tk_multiplicacion expresion
+   48          | expresion . tk_division expresion
+   49          | expresion . tk_modulo expresion
+   50          | expresion . tk_div expresion
+   51          | tk_parentesis_apertura expresion . tk_parentesis_cierre
+   55          | expresion . tk_AND expresion
+   56          | expresion . tk_OR expresion
+   60          | expresion . tk_operador_relacional expresion
+
+    tk_suma                 desplazar e ir al estado 120
+    tk_resta                desplazar e ir al estado 121
+    tk_AND                  desplazar e ir al estado 122
+    tk_OR                   desplazar e ir al estado 123
+    tk_multiplicacion       desplazar e ir al estado 124
+    tk_division             desplazar e ir al estado 125
+    tk_modulo               desplazar e ir al estado 126
+    tk_div                  desplazar e ir al estado 127
+    tk_operador_relacional  desplazar e ir al estado 128
+    tk_parentesis_cierre    desplazar e ir al estado 156
+
+
+Estado 118
+
+   19 lista_d_tipo: tk_identificador tk_igual d_tipo tk_punto_coma . lista_d_tipo
+
+    tk_identificador  desplazar e ir al estado 12
+
+    $default  reduce usando la regla 20 (lista_d_tipo)
+
+    lista_d_tipo  ir al estado 157
+
+
+Estado 119
+
+   24 d_tipo: expresion_t tk_subrango . expresion_t
+
+    tk_identificador        desplazar e ir al estado 92
+    tk_literal_caracter     desplazar e ir al estado 72
+    tk_resta                desplazar e ir al estado 73
+    tk_NOT                  desplazar e ir al estado 74
+    tk_parentesis_apertura  desplazar e ir al estado 75
+    tk_literal_numerico     desplazar e ir al estado 76
+    tk_verdadero            desplazar e ir al estado 77
+    tk_falso                desplazar e ir al estado 78
+
+    expresion_t  ir al estado 158
+    expresion    ir al estado 81
+    operando     ir al estado 82
+    funcion_ll   ir al estado 83
+
+
+Estado 120
+
+   45 expresion: expresion tk_suma . expresion
+
+    tk_identificador        desplazar e ir al estado 92
+    tk_resta                desplazar e ir al estado 73
+    tk_NOT                  desplazar e ir al estado 74
+    tk_parentesis_apertura  desplazar e ir al estado 75
+    tk_literal_numerico     desplazar e ir al estado 76
+    tk_verdadero            desplazar e ir al estado 77
+    tk_falso                desplazar e ir al estado 78
+
+    expresion   ir al estado 159
+    operando    ir al estado 82
+    funcion_ll  ir al estado 83
+
+
+Estado 121
+
+   46 expresion: expresion tk_resta . expresion
+
+    tk_identificador        desplazar e ir al estado 92
+    tk_resta                desplazar e ir al estado 73
+    tk_NOT                  desplazar e ir al estado 74
+    tk_parentesis_apertura  desplazar e ir al estado 75
+    tk_literal_numerico     desplazar e ir al estado 76
+    tk_verdadero            desplazar e ir al estado 77
+    tk_falso                desplazar e ir al estado 78
+
+    expresion   ir al estado 160
+    operando    ir al estado 82
+    funcion_ll  ir al estado 83
+
+
+Estado 122
+
+   55 expresion: expresion tk_AND . expresion
+
+    tk_identificador        desplazar e ir al estado 92
+    tk_resta                desplazar e ir al estado 73
+    tk_NOT                  desplazar e ir al estado 74
+    tk_parentesis_apertura  desplazar e ir al estado 75
+    tk_literal_numerico     desplazar e ir al estado 76
+    tk_verdadero            desplazar e ir al estado 77
+    tk_falso                desplazar e ir al estado 78
+
+    expresion   ir al estado 161
+    operando    ir al estado 82
+    funcion_ll  ir al estado 83
+
+
+Estado 123
+
+   56 expresion: expresion tk_OR . expresion
+
+    tk_identificador        desplazar e ir al estado 92
+    tk_resta                desplazar e ir al estado 73
+    tk_NOT                  desplazar e ir al estado 74
+    tk_parentesis_apertura  desplazar e ir al estado 75
+    tk_literal_numerico     desplazar e ir al estado 76
+    tk_verdadero            desplazar e ir al estado 77
+    tk_falso                desplazar e ir al estado 78
+
+    expresion   ir al estado 162
+    operando    ir al estado 82
+    funcion_ll  ir al estado 83
+
+
+Estado 124
+
+   47 expresion: expresion tk_multiplicacion . expresion
+
+    tk_identificador        desplazar e ir al estado 92
+    tk_resta                desplazar e ir al estado 73
+    tk_NOT                  desplazar e ir al estado 74
+    tk_parentesis_apertura  desplazar e ir al estado 75
+    tk_literal_numerico     desplazar e ir al estado 76
+    tk_verdadero            desplazar e ir al estado 77
+    tk_falso                desplazar e ir al estado 78
+
+    expresion   ir al estado 163
+    operando    ir al estado 82
+    funcion_ll  ir al estado 83
+
+
+Estado 125
+
+   48 expresion: expresion tk_division . expresion
+
+    tk_identificador        desplazar e ir al estado 92
+    tk_resta                desplazar e ir al estado 73
+    tk_NOT                  desplazar e ir al estado 74
+    tk_parentesis_apertura  desplazar e ir al estado 75
+    tk_literal_numerico     desplazar e ir al estado 76
+    tk_verdadero            desplazar e ir al estado 77
+    tk_falso                desplazar e ir al estado 78
+
+    expresion   ir al estado 164
+    operando    ir al estado 82
+    funcion_ll  ir al estado 83
+
+
+Estado 126
+
+   49 expresion: expresion tk_modulo . expresion
+
+    tk_identificador        desplazar e ir al estado 92
+    tk_resta                desplazar e ir al estado 73
+    tk_NOT                  desplazar e ir al estado 74
+    tk_parentesis_apertura  desplazar e ir al estado 75
+    tk_literal_numerico     desplazar e ir al estado 76
+    tk_verdadero            desplazar e ir al estado 77
+    tk_falso                desplazar e ir al estado 78
+
+    expresion   ir al estado 165
+    operando    ir al estado 82
+    funcion_ll  ir al estado 83
+
+
+Estado 127
+
+   50 expresion: expresion tk_div . expresion
+
+    tk_identificador        desplazar e ir al estado 92
+    tk_resta                desplazar e ir al estado 73
+    tk_NOT                  desplazar e ir al estado 74
+    tk_parentesis_apertura  desplazar e ir al estado 75
+    tk_literal_numerico     desplazar e ir al estado 76
+    tk_verdadero            desplazar e ir al estado 77
+    tk_falso                desplazar e ir al estado 78
+
+    expresion   ir al estado 166
+    operando    ir al estado 82
+    funcion_ll  ir al estado 83
+
+
+Estado 128
+
+   60 expresion: expresion tk_operador_relacional . expresion
+
+    tk_identificador        desplazar e ir al estado 92
+    tk_resta                desplazar e ir al estado 73
+    tk_NOT                  desplazar e ir al estado 74
+    tk_parentesis_apertura  desplazar e ir al estado 75
+    tk_literal_numerico     desplazar e ir al estado 76
+    tk_verdadero            desplazar e ir al estado 77
+    tk_falso                desplazar e ir al estado 78
+
+    expresion   ir al estado 167
+    operando    ir al estado 82
+    funcion_ll  ir al estado 83
+
+
+Estado 129
+
+   31 lista_d_cte: tk_identificador tk_igual tk_literal tk_punto_coma . lista_d_cte
+
+    tk_identificador  desplazar e ir al estado 14
+
+    $default  reduce usando la regla 32 (lista_d_cte)
+
+    lista_d_cte  ir al estado 168
+
+
+Estado 130
+
+   36 lista_id: tk_identificador tk_coma lista_id .
+
+    $default  reduce usando la regla 36 (lista_id)
+
+
+Estado 131
+
+   18 declaracion_var: tk_var lista_d_var tk_fvar tk_punto_coma .
+
+    $default  reduce usando la regla 18 (declaracion_var)
+
+
+Estado 132
+
+   23 d_tipo: tk_identificador .
+   33 lista_d_var: lista_id tk_dospuntos tk_identificador . tk_punto_coma lista_d_var
+   61 operando: tk_identificador .
+   90 funcion_ll: tk_identificador . tk_parentesis_apertura l_ll tk_parentesis_cierre
+
+    tk_punto_coma           desplazar e ir al estado 169
+    tk_parentesis_apertura  desplazar e ir al estado 110
+
+    tk_punto_coma  [reduce usando la regla 23 (d_tipo)]
+    $default       reduce usando la regla 61 (operando)
+
+
+Estado 133
+
+   34 lista_d_var: lista_id tk_dospuntos d_tipo . tk_punto_coma lista_d_var
+
+    tk_punto_coma  desplazar e ir al estado 170
+
+
+Estado 134
+
+   45 expresion: expresion . tk_suma expresion
+   46          | expresion . tk_resta expresion
+   47          | expresion . tk_multiplicacion expresion
+   48          | expresion . tk_division expresion
+   49          | expresion . tk_modulo expresion
+   50          | expresion . tk_div expresion
+   55          | expresion . tk_AND expresion
+   56          | expresion . tk_OR expresion
+   60          | expresion . tk_operador_relacional expresion
+   91 l_ll: expresion . tk_coma l_ll
+   92     | expresion .
+
+    tk_coma                 desplazar e ir al estado 171
+    tk_suma                 desplazar e ir al estado 120
+    tk_resta                desplazar e ir al estado 121
+    tk_AND                  desplazar e ir al estado 122
+    tk_OR                   desplazar e ir al estado 123
+    tk_multiplicacion       desplazar e ir al estado 124
+    tk_division             desplazar e ir al estado 125
+    tk_modulo               desplazar e ir al estado 126
+    tk_div                  desplazar e ir al estado 127
+    tk_operador_relacional  desplazar e ir al estado 128
+
+    $default  reduce usando la regla 92 (l_ll)
+
+
+Estado 135
+
+   89 accion_ll: tk_identificador tk_parentesis_apertura l_ll . tk_parentesis_cierre
+
+    tk_parentesis_cierre  desplazar e ir al estado 172
+
+
+Estado 136
+
+   73 alternativa: tk_si expresion tk_entonces . instrucciones lista_opciones tk_fsi
+
+    tk_identificador  desplazar e ir al estado 39
+    tk_continuar      desplazar e ir al estado 40
+    tk_si             desplazar e ir al estado 41
+    tk_mientras       desplazar e ir al estado 42
+    tk_para           desplazar e ir al estado 43
+
+    operando       ir al estado 44
+    instrucciones  ir al estado 173
+    instruccion    ir al estado 46
+    asignacion     ir al estado 47
+    alternativa    ir al estado 48
+    iteracion      ir al estado 49
+    it_cota_exp    ir al estado 50
+    it_cota_fija   ir al estado 51
+    accion_ll      ir al estado 52
+
+
+Estado 137
+
+   78 it_cota_exp: tk_mientras expresion tk_hacer . instrucciones tk_fmientras
+
+    tk_identificador  desplazar e ir al estado 39
+    tk_continuar      desplazar e ir al estado 40
+    tk_si             desplazar e ir al estado 41
+    tk_mientras       desplazar e ir al estado 42
+    tk_para           desplazar e ir al estado 43
+
+    operando       ir al estado 44
+    instrucciones  ir al estado 174
+    instruccion    ir al estado 46
+    asignacion     ir al estado 47
+    alternativa    ir al estado 48
+    iteracion      ir al estado 49
+    it_cota_exp    ir al estado 50
+    it_cota_fija   ir al estado 51
+    accion_ll      ir al estado 52
+
+
+Estado 138
+
+   79 it_cota_fija: tk_para tk_identificador tk_asignacion . expresion tk_hasta expresion tk_hacer instrucciones tk_fpara
+
+    tk_identificador        desplazar e ir al estado 92
+    tk_resta                desplazar e ir al estado 73
+    tk_NOT                  desplazar e ir al estado 74
+    tk_parentesis_apertura  desplazar e ir al estado 75
+    tk_literal_numerico     desplazar e ir al estado 76
+    tk_verdadero            desplazar e ir al estado 77
+    tk_falso                desplazar e ir al estado 78
+
+    expresion   ir al estado 175
+    operando    ir al estado 82
+    funcion_ll  ir al estado 83
+
+
+Estado 139
+
+   61 operando: tk_identificador .
+
+    $default  reduce usando la regla 61 (operando)
+
+
+Estado 140
+
+   62 operando: operando . tk_punto operando
+   62         | operando tk_punto operando .
+   63         | operando . tk_corchete_abierto expresion tk_corchete_cerrado
+   64         | operando . tk_ref
+
+    tk_punto             desplazar e ir al estado 96
+    tk_corchete_abierto  desplazar e ir al estado 97
+    tk_ref               desplazar e ir al estado 98
+
+    tk_punto             [reduce usando la regla 62 (operando)]
+    tk_corchete_abierto  [reduce usando la regla 62 (operando)]
+    tk_ref               [reduce usando la regla 62 (operando)]
+    $default             reduce usando la regla 62 (operando)
+
+
+Estado 141
+
+   45 expresion: expresion . tk_suma expresion
+   46          | expresion . tk_resta expresion
+   47          | expresion . tk_multiplicacion expresion
+   48          | expresion . tk_division expresion
+   49          | expresion . tk_modulo expresion
+   50          | expresion . tk_div expresion
+   55          | expresion . tk_AND expresion
+   56          | expresion . tk_OR expresion
+   60          | expresion . tk_operador_relacional expresion
+   63 operando: operando tk_corchete_abierto expresion . tk_corchete_cerrado
+
+    tk_corchete_cerrado     desplazar e ir al estado 176
+    tk_suma                 desplazar e ir al estado 120
+    tk_resta                desplazar e ir al estado 121
+    tk_AND                  desplazar e ir al estado 122
+    tk_OR                   desplazar e ir al estado 123
+    tk_multiplicacion       desplazar e ir al estado 124
+    tk_division             desplazar e ir al estado 125
+    tk_modulo               desplazar e ir al estado 126
+    tk_div                  desplazar e ir al estado 127
+    tk_operador_relacional  desplazar e ir al estado 128
+
+
+Estado 142
+
+   45 expresion: expresion . tk_suma expresion
+   46          | expresion . tk_resta expresion
+   47          | expresion . tk_multiplicacion expresion
+   48          | expresion . tk_division expresion
+   49          | expresion . tk_modulo expresion
+   50          | expresion . tk_div expresion
+   55          | expresion . tk_AND expresion
+   56          | expresion . tk_OR expresion
+   60          | expresion . tk_operador_relacional expresion
+   72 asignacion: operando tk_asignacion expresion .
+
+    tk_suma                 desplazar e ir al estado 120
+    tk_resta                desplazar e ir al estado 121
+    tk_AND                  desplazar e ir al estado 122
+    tk_OR                   desplazar e ir al estado 123
+    tk_multiplicacion       desplazar e ir al estado 124
+    tk_division             desplazar e ir al estado 125
+    tk_modulo               desplazar e ir al estado 126
+    tk_div                  desplazar e ir al estado 127
+    tk_operador_relacional  desplazar e ir al estado 128
+
+    $default  reduce usando la regla 72 (asignacion)
+
+
+Estado 143
+
+   65 instrucciones: instruccion tk_punto_coma instrucciones .
+
+    $default  reduce usando la regla 65 (instrucciones)
+
+
+Estado 144
+
+   86 d_p_form: tk_ent . lista_id tk_dospuntos d_tipo
+
+    tk_identificador  desplazar e ir al estado 34
+
+    $default  reduce usando la regla 38 (lista_id)
+
+    lista_id  ir al estado 177
+
+
+Estado 145
+
+   87 d_p_form: tk_sal . lista_id tk_dospuntos d_tipo
+
+    tk_identificador  desplazar e ir al estado 34
+
+    $default  reduce usando la regla 38 (lista_id)
+
+    lista_id  ir al estado 178
+
+
+Estado 146
+
+   88 d_p_form: tk_ent_sal . lista_id tk_dospuntos d_tipo
+
+    tk_identificador  desplazar e ir al estado 34
+
+    $default  reduce usando la regla 38 (lista_id)
+
+    lista_id  ir al estado 179
+
+
+Estado 147
+
+   82 a_cabecera: tk_identificador tk_parentesis_apertura d_par_form . tk_parentesis_cierre tk_punto_coma
+
+    tk_parentesis_cierre  desplazar e ir al estado 180
+
+
+Estado 148
+
+   84 d_par_form: d_p_form . tk_punto_coma d_par_form
+
+    tk_punto_coma  desplazar e ir al estado 181
+
+
+Estado 149
+
+   80 accion_d: tk_accion a_cabecera bloque tk_faccion .
+
+    $default  reduce usando la regla 80 (accion_d)
+
+
+Estado 150
+
+   83 f_cabecera: tk_identificador tk_parentesis_apertura lista_d_var . tk_parentesis_cierre tk_dev d_tipo tk_punto_coma
+
+    tk_parentesis_cierre  desplazar e ir al estado 182
+
+
+Estado 151
+
+   81 funcion_d: tk_funcion f_cabecera bloque tk_dev . expresion tk_ffuncion
+
+    tk_identificador        desplazar e ir al estado 92
+    tk_resta                desplazar e ir al estado 73
+    tk_NOT                  desplazar e ir al estado 74
+    tk_parentesis_apertura  desplazar e ir al estado 75
+    tk_literal_numerico     desplazar e ir al estado 76
+    tk_verdadero            desplazar e ir al estado 77
+    tk_falso                desplazar e ir al estado 78
+
+    expresion   ir al estado 183
+    operando    ir al estado 82
+    funcion_ll  ir al estado 83
+
+
+Estado 152
+
+   90 funcion_ll: tk_identificador tk_parentesis_apertura l_ll . tk_parentesis_cierre
+
+    tk_parentesis_cierre  desplazar e ir al estado 184
+
+
+Estado 153
+
+   29 lista_campos: tk_identificador tk_dospuntos . d_tipo tk_punto lista_campos
+
+    tk_identificador        desplazar e ir al estado 67
+    tk_tupla                desplazar e ir al estado 68
+    tk_tabla                desplazar e ir al estado 69
+    tk_ref                  desplazar e ir al estado 70
+    tk_tipo_base            desplazar e ir al estado 71
+    tk_literal_caracter     desplazar e ir al estado 72
+    tk_resta                desplazar e ir al estado 73
+    tk_NOT                  desplazar e ir al estado 74
+    tk_parentesis_apertura  desplazar e ir al estado 75
+    tk_literal_numerico     desplazar e ir al estado 76
+    tk_verdadero            desplazar e ir al estado 77
+    tk_falso                desplazar e ir al estado 78
+
+    d_tipo       ir al estado 185
+    expresion_t  ir al estado 80
+    expresion    ir al estado 81
+    operando     ir al estado 82
+    funcion_ll   ir al estado 83
+
+
+Estado 154
+
+   21 d_tipo: tk_tupla lista_campos tk_ftupla .
+
+    $default  reduce usando la regla 21 (d_tipo)
+
+
+Estado 155
+
+   22 d_tipo: tk_tabla tk_corchete_abierto expresion_t . tk_subrango expresion_t tk_corchete_cerrado tk_de d_tipo
+
+    tk_subrango  desplazar e ir al estado 186
+
+
+Estado 156
+
+   51 expresion: tk_parentesis_apertura expresion tk_parentesis_cierre .
+
+    $default  reduce usando la regla 51 (expresion)
+
+
+Estado 157
+
+   19 lista_d_tipo: tk_identificador tk_igual d_tipo tk_punto_coma lista_d_tipo .
+
+    $default  reduce usando la regla 19 (lista_d_tipo)
+
+
+Estado 158
+
+   24 d_tipo: expresion_t tk_subrango expresion_t .
+
+    $default  reduce usando la regla 24 (d_tipo)
+
+
+Estado 159
+
+   45 expresion: expresion . tk_suma expresion
+   45          | expresion tk_suma expresion .
+   46          | expresion . tk_resta expresion
+   47          | expresion . tk_multiplicacion expresion
+   48          | expresion . tk_division expresion
+   49          | expresion . tk_modulo expresion
+   50          | expresion . tk_div expresion
+   55          | expresion . tk_AND expresion
+   56          | expresion . tk_OR expresion
+   60          | expresion . tk_operador_relacional expresion
+
+    tk_multiplicacion       desplazar e ir al estado 124
+    tk_division             desplazar e ir al estado 125
+    tk_modulo               desplazar e ir al estado 126
+    tk_div                  desplazar e ir al estado 127
+    tk_operador_relacional  desplazar e ir al estado 128
+
+    $default  reduce usando la regla 45 (expresion)
+
+
+Estado 160
+
+   45 expresion: expresion . tk_suma expresion
+   46          | expresion . tk_resta expresion
+   46          | expresion tk_resta expresion .
+   47          | expresion . tk_multiplicacion expresion
+   48          | expresion . tk_division expresion
+   49          | expresion . tk_modulo expresion
+   50          | expresion . tk_div expresion
+   55          | expresion . tk_AND expresion
+   56          | expresion . tk_OR expresion
+   60          | expresion . tk_operador_relacional expresion
+
+    tk_multiplicacion       desplazar e ir al estado 124
+    tk_division             desplazar e ir al estado 125
+    tk_modulo               desplazar e ir al estado 126
+    tk_div                  desplazar e ir al estado 127
+    tk_operador_relacional  desplazar e ir al estado 128
+
+    $default  reduce usando la regla 46 (expresion)
+
+
+Estado 161
+
+   45 expresion: expresion . tk_suma expresion
+   46          | expresion . tk_resta expresion
+   47          | expresion . tk_multiplicacion expresion
+   48          | expresion . tk_division expresion
+   49          | expresion . tk_modulo expresion
+   50          | expresion . tk_div expresion
+   55          | expresion . tk_AND expresion
+   55          | expresion tk_AND expresion .
+   56          | expresion . tk_OR expresion
+   60          | expresion . tk_operador_relacional expresion
+
+    tk_multiplicacion       desplazar e ir al estado 124
+    tk_division             desplazar e ir al estado 125
+    tk_modulo               desplazar e ir al estado 126
+    tk_div                  desplazar e ir al estado 127
+    tk_operador_relacional  desplazar e ir al estado 128
+
+    $default  reduce usando la regla 55 (expresion)
+
+
+Estado 162
+
+   45 expresion: expresion . tk_suma expresion
+   46          | expresion . tk_resta expresion
+   47          | expresion . tk_multiplicacion expresion
+   48          | expresion . tk_division expresion
+   49          | expresion . tk_modulo expresion
+   50          | expresion . tk_div expresion
+   55          | expresion . tk_AND expresion
+   56          | expresion . tk_OR expresion
+   56          | expresion tk_OR expresion .
+   60          | expresion . tk_operador_relacional expresion
+
+    tk_multiplicacion       desplazar e ir al estado 124
+    tk_division             desplazar e ir al estado 125
+    tk_modulo               desplazar e ir al estado 126
+    tk_div                  desplazar e ir al estado 127
+    tk_operador_relacional  desplazar e ir al estado 128
+
+    $default  reduce usando la regla 56 (expresion)
+
+
+Estado 163
+
+   45 expresion: expresion . tk_suma expresion
+   46          | expresion . tk_resta expresion
+   47          | expresion . tk_multiplicacion expresion
+   47          | expresion tk_multiplicacion expresion .
+   48          | expresion . tk_division expresion
+   49          | expresion . tk_modulo expresion
+   50          | expresion . tk_div expresion
+   55          | expresion . tk_AND expresion
+   56          | expresion . tk_OR expresion
+   60          | expresion . tk_operador_relacional expresion
+
+    tk_operador_relacional  desplazar e ir al estado 128
+
+    $default  reduce usando la regla 47 (expresion)
+
+
+Estado 164
+
+   45 expresion: expresion . tk_suma expresion
+   46          | expresion . tk_resta expresion
+   47          | expresion . tk_multiplicacion expresion
+   48          | expresion . tk_division expresion
+   48          | expresion tk_division expresion .
+   49          | expresion . tk_modulo expresion
+   50          | expresion . tk_div expresion
+   55          | expresion . tk_AND expresion
+   56          | expresion . tk_OR expresion
+   60          | expresion . tk_operador_relacional expresion
+
+    tk_operador_relacional  desplazar e ir al estado 128
+
+    $default  reduce usando la regla 48 (expresion)
+
+
+Estado 165
+
+   45 expresion: expresion . tk_suma expresion
+   46          | expresion . tk_resta expresion
+   47          | expresion . tk_multiplicacion expresion
+   48          | expresion . tk_division expresion
+   49          | expresion . tk_modulo expresion
+   49          | expresion tk_modulo expresion .
+   50          | expresion . tk_div expresion
+   55          | expresion . tk_AND expresion
+   56          | expresion . tk_OR expresion
+   60          | expresion . tk_operador_relacional expresion
+
+    tk_operador_relacional  desplazar e ir al estado 128
+
+    $default  reduce usando la regla 49 (expresion)
+
+
+Estado 166
+
+   45 expresion: expresion . tk_suma expresion
+   46          | expresion . tk_resta expresion
+   47          | expresion . tk_multiplicacion expresion
+   48          | expresion . tk_division expresion
+   49          | expresion . tk_modulo expresion
+   50          | expresion . tk_div expresion
+   50          | expresion tk_div expresion .
+   55          | expresion . tk_AND expresion
+   56          | expresion . tk_OR expresion
+   60          | expresion . tk_operador_relacional expresion
+
+    tk_operador_relacional  desplazar e ir al estado 128
+
+    $default  reduce usando la regla 50 (expresion)
+
+
+Estado 167
+
+   45 expresion: expresion . tk_suma expresion
+   46          | expresion . tk_resta expresion
+   47          | expresion . tk_multiplicacion expresion
+   48          | expresion . tk_division expresion
+   49          | expresion . tk_modulo expresion
+   50          | expresion . tk_div expresion
+   55          | expresion . tk_AND expresion
+   56          | expresion . tk_OR expresion
+   60          | expresion . tk_operador_relacional expresion
+   60          | expresion tk_operador_relacional expresion .
+
+    $default  reduce usando la regla 60 (expresion)
+
+
+Estado 168
+
+   31 lista_d_cte: tk_identificador tk_igual tk_literal tk_punto_coma lista_d_cte .
+
+    $default  reduce usando la regla 31 (lista_d_cte)
+
+
+Estado 169
+
+   33 lista_d_var: lista_id tk_dospuntos tk_identificador tk_punto_coma . lista_d_var
+
+    tk_identificador  desplazar e ir al estado 34
+
+    tk_dospuntos  reduce usando la regla 38 (lista_id)
+    $default      reduce usando la regla 35 (lista_d_var)
+
+    lista_d_var  ir al estado 187
+    lista_id     ir al estado 36
+
+
+Estado 170
+
+   34 lista_d_var: lista_id tk_dospuntos d_tipo tk_punto_coma . lista_d_var
+
+    tk_identificador  desplazar e ir al estado 34
+
+    tk_dospuntos  reduce usando la regla 38 (lista_id)
+    $default      reduce usando la regla 35 (lista_d_var)
+
+    lista_d_var  ir al estado 188
+    lista_id     ir al estado 36
+
+
+Estado 171
+
+   91 l_ll: expresion tk_coma . l_ll
+
+    tk_identificador        desplazar e ir al estado 92
+    tk_resta                desplazar e ir al estado 73
+    tk_NOT                  desplazar e ir al estado 74
+    tk_parentesis_apertura  desplazar e ir al estado 75
+    tk_literal_numerico     desplazar e ir al estado 76
+    tk_verdadero            desplazar e ir al estado 77
+    tk_falso                desplazar e ir al estado 78
+
+    expresion   ir al estado 134
+    operando    ir al estado 82
+    funcion_ll  ir al estado 83
+    l_ll        ir al estado 189
+
+
+Estado 172
+
+   89 accion_ll: tk_identificador tk_parentesis_apertura l_ll tk_parentesis_cierre .
+
+    $default  reduce usando la regla 89 (accion_ll)
+
+
+Estado 173
+
+   73 alternativa: tk_si expresion tk_entonces instrucciones . lista_opciones tk_fsi
+
+    tk_sino  desplazar e ir al estado 190
+
+    $default  reduce usando la regla 75 (lista_opciones)
+
+    lista_opciones  ir al estado 191
+
+
+Estado 174
+
+   78 it_cota_exp: tk_mientras expresion tk_hacer instrucciones . tk_fmientras
+
+    tk_fmientras  desplazar e ir al estado 192
+
+
+Estado 175
+
+   45 expresion: expresion . tk_suma expresion
+   46          | expresion . tk_resta expresion
+   47          | expresion . tk_multiplicacion expresion
+   48          | expresion . tk_division expresion
+   49          | expresion . tk_modulo expresion
+   50          | expresion . tk_div expresion
+   55          | expresion . tk_AND expresion
+   56          | expresion . tk_OR expresion
+   60          | expresion . tk_operador_relacional expresion
+   79 it_cota_fija: tk_para tk_identificador tk_asignacion expresion . tk_hasta expresion tk_hacer instrucciones tk_fpara
+
+    tk_suma                 desplazar e ir al estado 120
+    tk_resta                desplazar e ir al estado 121
+    tk_AND                  desplazar e ir al estado 122
+    tk_OR                   desplazar e ir al estado 123
+    tk_multiplicacion       desplazar e ir al estado 124
+    tk_division             desplazar e ir al estado 125
+    tk_modulo               desplazar e ir al estado 126
+    tk_div                  desplazar e ir al estado 127
+    tk_operador_relacional  desplazar e ir al estado 128
+    tk_hasta                desplazar e ir al estado 193
+
+
+Estado 176
+
+   63 operando: operando tk_corchete_abierto expresion tk_corchete_cerrado .
+
+    $default  reduce usando la regla 63 (operando)
+
+
+Estado 177
+
+   86 d_p_form: tk_ent lista_id . tk_dospuntos d_tipo
+
+    tk_dospuntos  desplazar e ir al estado 194
+
+
+Estado 178
+
+   87 d_p_form: tk_sal lista_id . tk_dospuntos d_tipo
+
+    tk_dospuntos  desplazar e ir al estado 195
+
+
+Estado 179
+
+   88 d_p_form: tk_ent_sal lista_id . tk_dospuntos d_tipo
+
+    tk_dospuntos  desplazar e ir al estado 196
+
+
+Estado 180
+
+   82 a_cabecera: tk_identificador tk_parentesis_apertura d_par_form tk_parentesis_cierre . tk_punto_coma
+
+    tk_punto_coma  desplazar e ir al estado 197
+
+
+Estado 181
+
+   84 d_par_form: d_p_form tk_punto_coma . d_par_form
+
+    tk_ent      desplazar e ir al estado 144
+    tk_sal      desplazar e ir al estado 145
+    tk_ent_sal  desplazar e ir al estado 146
+
+    $default  reduce usando la regla 85 (d_par_form)
+
+    d_par_form  ir al estado 198
+    d_p_form    ir al estado 148
+
+
+Estado 182
+
+   83 f_cabecera: tk_identificador tk_parentesis_apertura lista_d_var tk_parentesis_cierre . tk_dev d_tipo tk_punto_coma
+
+    tk_dev  desplazar e ir al estado 199
+
+
+Estado 183
+
+   45 expresion: expresion . tk_suma expresion
+   46          | expresion . tk_resta expresion
+   47          | expresion . tk_multiplicacion expresion
+   48          | expresion . tk_division expresion
+   49          | expresion . tk_modulo expresion
+   50          | expresion . tk_div expresion
+   55          | expresion . tk_AND expresion
+   56          | expresion . tk_OR expresion
+   60          | expresion . tk_operador_relacional expresion
+   81 funcion_d: tk_funcion f_cabecera bloque tk_dev expresion . tk_ffuncion
+
+    tk_suma                 desplazar e ir al estado 120
+    tk_resta                desplazar e ir al estado 121
+    tk_AND                  desplazar e ir al estado 122
+    tk_OR                   desplazar e ir al estado 123
+    tk_multiplicacion       desplazar e ir al estado 124
+    tk_division             desplazar e ir al estado 125
+    tk_modulo               desplazar e ir al estado 126
+    tk_div                  desplazar e ir al estado 127
+    tk_operador_relacional  desplazar e ir al estado 128
+    tk_ffuncion             desplazar e ir al estado 200
+
+
+Estado 184
+
+   90 funcion_ll: tk_identificador tk_parentesis_apertura l_ll tk_parentesis_cierre .
+
+    $default  reduce usando la regla 90 (funcion_ll)
+
+
+Estado 185
+
+   29 lista_campos: tk_identificador tk_dospuntos d_tipo . tk_punto lista_campos
+
+    tk_punto  desplazar e ir al estado 201
+
+
+Estado 186
+
+   22 d_tipo: tk_tabla tk_corchete_abierto expresion_t tk_subrango . expresion_t tk_corchete_cerrado tk_de d_tipo
+
+    tk_identificador        desplazar e ir al estado 92
+    tk_literal_caracter     desplazar e ir al estado 72
+    tk_resta                desplazar e ir al estado 73
+    tk_NOT                  desplazar e ir al estado 74
+    tk_parentesis_apertura  desplazar e ir al estado 75
+    tk_literal_numerico     desplazar e ir al estado 76
+    tk_verdadero            desplazar e ir al estado 77
+    tk_falso                desplazar e ir al estado 78
+
+    expresion_t  ir al estado 202
+    expresion    ir al estado 81
+    operando     ir al estado 82
+    funcion_ll   ir al estado 83
+
+
+Estado 187
+
+   33 lista_d_var: lista_id tk_dospuntos tk_identificador tk_punto_coma lista_d_var .
+
+    $default  reduce usando la regla 33 (lista_d_var)
+
+
+Estado 188
+
+   34 lista_d_var: lista_id tk_dospuntos d_tipo tk_punto_coma lista_d_var .
+
+    $default  reduce usando la regla 34 (lista_d_var)
+
+
+Estado 189
+
+   91 l_ll: expresion tk_coma l_ll .
+
+    $default  reduce usando la regla 91 (l_ll)
+
+
+Estado 190
+
+   74 lista_opciones: tk_sino . expresion tk_entonces instrucciones lista_opciones
+
+    tk_identificador        desplazar e ir al estado 92
+    tk_resta                desplazar e ir al estado 73
+    tk_NOT                  desplazar e ir al estado 74
+    tk_parentesis_apertura  desplazar e ir al estado 75
+    tk_literal_numerico     desplazar e ir al estado 76
+    tk_verdadero            desplazar e ir al estado 77
+    tk_falso                desplazar e ir al estado 78
+
+    expresion   ir al estado 203
+    operando    ir al estado 82
+    funcion_ll  ir al estado 83
+
+
+Estado 191
+
+   73 alternativa: tk_si expresion tk_entonces instrucciones lista_opciones . tk_fsi
+
+    tk_fsi  desplazar e ir al estado 204
+
+
+Estado 192
+
+   78 it_cota_exp: tk_mientras expresion tk_hacer instrucciones tk_fmientras .
+
+    $default  reduce usando la regla 78 (it_cota_exp)
+
+
+Estado 193
+
+   79 it_cota_fija: tk_para tk_identificador tk_asignacion expresion tk_hasta . expresion tk_hacer instrucciones tk_fpara
+
+    tk_identificador        desplazar e ir al estado 92
+    tk_resta                desplazar e ir al estado 73
+    tk_NOT                  desplazar e ir al estado 74
+    tk_parentesis_apertura  desplazar e ir al estado 75
+    tk_literal_numerico     desplazar e ir al estado 76
+    tk_verdadero            desplazar e ir al estado 77
+    tk_falso                desplazar e ir al estado 78
+
+    expresion   ir al estado 205
+    operando    ir al estado 82
+    funcion_ll  ir al estado 83
+
+
+Estado 194
+
+   86 d_p_form: tk_ent lista_id tk_dospuntos . d_tipo
+
+    tk_identificador        desplazar e ir al estado 67
+    tk_tupla                desplazar e ir al estado 68
+    tk_tabla                desplazar e ir al estado 69
+    tk_ref                  desplazar e ir al estado 70
+    tk_tipo_base            desplazar e ir al estado 71
+    tk_literal_caracter     desplazar e ir al estado 72
+    tk_resta                desplazar e ir al estado 73
+    tk_NOT                  desplazar e ir al estado 74
+    tk_parentesis_apertura  desplazar e ir al estado 75
+    tk_literal_numerico     desplazar e ir al estado 76
+    tk_verdadero            desplazar e ir al estado 77
+    tk_falso                desplazar e ir al estado 78
+
+    d_tipo       ir al estado 206
+    expresion_t  ir al estado 80
+    expresion    ir al estado 81
+    operando     ir al estado 82
+    funcion_ll   ir al estado 83
+
+
+Estado 195
+
+   87 d_p_form: tk_sal lista_id tk_dospuntos . d_tipo
+
+    tk_identificador        desplazar e ir al estado 67
+    tk_tupla                desplazar e ir al estado 68
+    tk_tabla                desplazar e ir al estado 69
+    tk_ref                  desplazar e ir al estado 70
+    tk_tipo_base            desplazar e ir al estado 71
+    tk_literal_caracter     desplazar e ir al estado 72
+    tk_resta                desplazar e ir al estado 73
+    tk_NOT                  desplazar e ir al estado 74
+    tk_parentesis_apertura  desplazar e ir al estado 75
+    tk_literal_numerico     desplazar e ir al estado 76
+    tk_verdadero            desplazar e ir al estado 77
+    tk_falso                desplazar e ir al estado 78
+
+    d_tipo       ir al estado 207
+    expresion_t  ir al estado 80
+    expresion    ir al estado 81
+    operando     ir al estado 82
+    funcion_ll   ir al estado 83
+
+
+Estado 196
+
+   88 d_p_form: tk_ent_sal lista_id tk_dospuntos . d_tipo
+
+    tk_identificador        desplazar e ir al estado 67
+    tk_tupla                desplazar e ir al estado 68
+    tk_tabla                desplazar e ir al estado 69
+    tk_ref                  desplazar e ir al estado 70
+    tk_tipo_base            desplazar e ir al estado 71
+    tk_literal_caracter     desplazar e ir al estado 72
+    tk_resta                desplazar e ir al estado 73
+    tk_NOT                  desplazar e ir al estado 74
+    tk_parentesis_apertura  desplazar e ir al estado 75
+    tk_literal_numerico     desplazar e ir al estado 76
+    tk_verdadero            desplazar e ir al estado 77
+    tk_falso                desplazar e ir al estado 78
+
+    d_tipo       ir al estado 208
+    expresion_t  ir al estado 80
+    expresion    ir al estado 81
+    operando     ir al estado 82
+    funcion_ll   ir al estado 83
+
+
+Estado 197
+
+   82 a_cabecera: tk_identificador tk_parentesis_apertura d_par_form tk_parentesis_cierre tk_punto_coma .
+
+    $default  reduce usando la regla 82 (a_cabecera)
+
+
+Estado 198
+
+   84 d_par_form: d_p_form tk_punto_coma d_par_form .
+
+    $default  reduce usando la regla 84 (d_par_form)
+
+
+Estado 199
+
+   83 f_cabecera: tk_identificador tk_parentesis_apertura lista_d_var tk_parentesis_cierre tk_dev . d_tipo tk_punto_coma
+
+    tk_identificador        desplazar e ir al estado 67
+    tk_tupla                desplazar e ir al estado 68
+    tk_tabla                desplazar e ir al estado 69
+    tk_ref                  desplazar e ir al estado 70
+    tk_tipo_base            desplazar e ir al estado 71
+    tk_literal_caracter     desplazar e ir al estado 72
+    tk_resta                desplazar e ir al estado 73
+    tk_NOT                  desplazar e ir al estado 74
+    tk_parentesis_apertura  desplazar e ir al estado 75
+    tk_literal_numerico     desplazar e ir al estado 76
+    tk_verdadero            desplazar e ir al estado 77
+    tk_falso                desplazar e ir al estado 78
+
+    d_tipo       ir al estado 209
+    expresion_t  ir al estado 80
+    expresion    ir al estado 81
+    operando     ir al estado 82
+    funcion_ll   ir al estado 83
+
+
+Estado 200
+
+   81 funcion_d: tk_funcion f_cabecera bloque tk_dev expresion tk_ffuncion .
+
+    $default  reduce usando la regla 81 (funcion_d)
+
+
+Estado 201
+
+   29 lista_campos: tk_identificador tk_dospuntos d_tipo tk_punto . lista_campos
+
+    tk_identificador  desplazar e ir al estado 111
+
+    $default  reduce usando la regla 30 (lista_campos)
+
+    lista_campos  ir al estado 210
+
+
+Estado 202
+
+   22 d_tipo: tk_tabla tk_corchete_abierto expresion_t tk_subrango expresion_t . tk_corchete_cerrado tk_de d_tipo
+
+    tk_corchete_cerrado  desplazar e ir al estado 211
+
+
+Estado 203
+
+   45 expresion: expresion . tk_suma expresion
+   46          | expresion . tk_resta expresion
+   47          | expresion . tk_multiplicacion expresion
+   48          | expresion . tk_division expresion
+   49          | expresion . tk_modulo expresion
+   50          | expresion . tk_div expresion
+   55          | expresion . tk_AND expresion
+   56          | expresion . tk_OR expresion
+   60          | expresion . tk_operador_relacional expresion
+   74 lista_opciones: tk_sino expresion . tk_entonces instrucciones lista_opciones
+
+    tk_suma                 desplazar e ir al estado 120
+    tk_resta                desplazar e ir al estado 121
+    tk_AND                  desplazar e ir al estado 122
+    tk_OR                   desplazar e ir al estado 123
+    tk_multiplicacion       desplazar e ir al estado 124
+    tk_division             desplazar e ir al estado 125
+    tk_modulo               desplazar e ir al estado 126
+    tk_div                  desplazar e ir al estado 127
+    tk_operador_relacional  desplazar e ir al estado 128
+    tk_entonces             desplazar e ir al estado 212
+
+
+Estado 204
+
+   73 alternativa: tk_si expresion tk_entonces instrucciones lista_opciones tk_fsi .
+
+    $default  reduce usando la regla 73 (alternativa)
+
+
+Estado 205
+
+   45 expresion: expresion . tk_suma expresion
+   46          | expresion . tk_resta expresion
+   47          | expresion . tk_multiplicacion expresion
+   48          | expresion . tk_division expresion
+   49          | expresion . tk_modulo expresion
+   50          | expresion . tk_div expresion
+   55          | expresion . tk_AND expresion
+   56          | expresion . tk_OR expresion
+   60          | expresion . tk_operador_relacional expresion
+   79 it_cota_fija: tk_para tk_identificador tk_asignacion expresion tk_hasta expresion . tk_hacer instrucciones tk_fpara
+
+    tk_suma                 desplazar e ir al estado 120
+    tk_resta                desplazar e ir al estado 121
+    tk_AND                  desplazar e ir al estado 122
+    tk_OR                   desplazar e ir al estado 123
+    tk_multiplicacion       desplazar e ir al estado 124
+    tk_division             desplazar e ir al estado 125
+    tk_modulo               desplazar e ir al estado 126
+    tk_div                  desplazar e ir al estado 127
+    tk_operador_relacional  desplazar e ir al estado 128
+    tk_hacer                desplazar e ir al estado 213
+
+
+Estado 206
+
+   86 d_p_form: tk_ent lista_id tk_dospuntos d_tipo .
+
+    $default  reduce usando la regla 86 (d_p_form)
+
+
+Estado 207
+
+   87 d_p_form: tk_sal lista_id tk_dospuntos d_tipo .
+
+    $default  reduce usando la regla 87 (d_p_form)
+
+
+Estado 208
+
+   88 d_p_form: tk_ent_sal lista_id tk_dospuntos d_tipo .
+
+    $default  reduce usando la regla 88 (d_p_form)
+
+
+Estado 209
+
+   83 f_cabecera: tk_identificador tk_parentesis_apertura lista_d_var tk_parentesis_cierre tk_dev d_tipo . tk_punto_coma
+
+    tk_punto_coma  desplazar e ir al estado 214
+
+
+Estado 210
+
+   29 lista_campos: tk_identificador tk_dospuntos d_tipo tk_punto lista_campos .
+
+    $default  reduce usando la regla 29 (lista_campos)
+
+
+Estado 211
+
+   22 d_tipo: tk_tabla tk_corchete_abierto expresion_t tk_subrango expresion_t tk_corchete_cerrado . tk_de d_tipo
+
+    tk_de  desplazar e ir al estado 215
+
+
+Estado 212
+
+   74 lista_opciones: tk_sino expresion tk_entonces . instrucciones lista_opciones
+
+    tk_identificador  desplazar e ir al estado 39
+    tk_continuar      desplazar e ir al estado 40
+    tk_si             desplazar e ir al estado 41
+    tk_mientras       desplazar e ir al estado 42
+    tk_para           desplazar e ir al estado 43
+
+    operando       ir al estado 44
+    instrucciones  ir al estado 216
+    instruccion    ir al estado 46
+    asignacion     ir al estado 47
+    alternativa    ir al estado 48
+    iteracion      ir al estado 49
+    it_cota_exp    ir al estado 50
+    it_cota_fija   ir al estado 51
+    accion_ll      ir al estado 52
+
+
+Estado 213
+
+   79 it_cota_fija: tk_para tk_identificador tk_asignacion expresion tk_hasta expresion tk_hacer . instrucciones tk_fpara
+
+    tk_identificador  desplazar e ir al estado 39
+    tk_continuar      desplazar e ir al estado 40
+    tk_si             desplazar e ir al estado 41
+    tk_mientras       desplazar e ir al estado 42
+    tk_para           desplazar e ir al estado 43
+
+    operando       ir al estado 44
+    instrucciones  ir al estado 217
+    instruccion    ir al estado 46
+    asignacion     ir al estado 47
+    alternativa    ir al estado 48
+    iteracion      ir al estado 49
+    it_cota_exp    ir al estado 50
+    it_cota_fija   ir al estado 51
+    accion_ll      ir al estado 52
+
+
+Estado 214
+
+   83 f_cabecera: tk_identificador tk_parentesis_apertura lista_d_var tk_parentesis_cierre tk_dev d_tipo tk_punto_coma .
+
+    $default  reduce usando la regla 83 (f_cabecera)
+
+
+Estado 215
+
+   22 d_tipo: tk_tabla tk_corchete_abierto expresion_t tk_subrango expresion_t tk_corchete_cerrado tk_de . d_tipo
+
+    tk_identificador        desplazar e ir al estado 67
+    tk_tupla                desplazar e ir al estado 68
+    tk_tabla                desplazar e ir al estado 69
+    tk_ref                  desplazar e ir al estado 70
+    tk_tipo_base            desplazar e ir al estado 71
+    tk_literal_caracter     desplazar e ir al estado 72
+    tk_resta                desplazar e ir al estado 73
+    tk_NOT                  desplazar e ir al estado 74
+    tk_parentesis_apertura  desplazar e ir al estado 75
+    tk_literal_numerico     desplazar e ir al estado 76
+    tk_verdadero            desplazar e ir al estado 77
+    tk_falso                desplazar e ir al estado 78
+
+    d_tipo       ir al estado 218
+    expresion_t  ir al estado 80
+    expresion    ir al estado 81
+    operando     ir al estado 82
+    funcion_ll   ir al estado 83
+
+
+Estado 216
+
+   74 lista_opciones: tk_sino expresion tk_entonces instrucciones . lista_opciones
+
+    tk_sino  desplazar e ir al estado 190
+
+    $default  reduce usando la regla 75 (lista_opciones)
+
+    lista_opciones  ir al estado 219
+
+
+Estado 217
+
+   79 it_cota_fija: tk_para tk_identificador tk_asignacion expresion tk_hasta expresion tk_hacer instrucciones . tk_fpara
+
+    tk_fpara  desplazar e ir al estado 220
+
+
+Estado 218
+
+   22 d_tipo: tk_tabla tk_corchete_abierto expresion_t tk_subrango expresion_t tk_corchete_cerrado tk_de d_tipo .
+
+    $default  reduce usando la regla 22 (d_tipo)
+
+
+Estado 219
+
+   74 lista_opciones: tk_sino expresion tk_entonces instrucciones lista_opciones .
+
+    $default  reduce usando la regla 74 (lista_opciones)
+
+
+Estado 220
+
+   79 it_cota_fija: tk_para tk_identificador tk_asignacion expresion tk_hasta expresion tk_hacer instrucciones tk_fpara .
+
+    $default  reduce usando la regla 79 (it_cota_fija)
