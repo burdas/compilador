@@ -1,5 +1,3 @@
-/* Infix notation calculator. */
-
 %{
   #include <math.h>
   #include <stdio.h>
@@ -70,176 +68,180 @@
 %%
 /* The grammar follows. */
 
-desc_algoritmo:   tk_algoritmo tk_identificador tk_punto_coma cabecera_alg bloque_alg tk_falgoritmo tk_punto { printf("Regla desc_algoritmo");}
+desc_algoritmo:   tk_algoritmo tk_identificador tk_punto_coma cabecera_alg bloque_alg tk_falgoritmo tk_punto { printf("\tRegla desc_algoritmo\n");}
               ;
                 
-cabecera_alg:     decl_globales decl_a_f decl_ent_sal tk_comentario { printf("Regla cabecera_alg"); }
+cabecera_alg:     decl_globales decl_a_f decl_ent_sal tk_comentario { printf("\tRegla cabecera_alg\n"); }
             ;
                 
-bloque_alg:       bloque tk_comentario { printf("Regla bloque_alg"); }
+bloque_alg:       bloque tk_comentario { printf("\tRegla bloque_alg\n"); }
           ;
                 
-decl_globales:    declaracion_tipo decl_globales { printf("Regla decl_globales ( -> tipo )"); }
-            |     declaracion_cte decl_globales { printf("Regla decl_globales ( -> cte )"); }
-            |     %empty { printf("Regla decl_globales ( -> epsilon )"); }
+decl_globales:    declaracion_tipo decl_globales { printf("\tRegla decl_globales ( -> tipo )\n"); }
+            |     declaracion_cte decl_globales { printf("\tRegla decl_globales ( -> cte )\n"); }
+            |     %empty { printf("\tRegla decl_globales ( -> epsilon )\n"); }
             ;
                 
-decl_a_f:         accion_d decl_a_f { printf("Regla decl_a_f ( -> accion)"); }
-        |         funcion_d decl_a_f { printf("Regla decl_a_f ( -> funcion)"); }
-        |         %empty { printf("Regla decl_a_f ( -> epsilon)"); }
+decl_a_f:         accion_d decl_a_f { printf("\tRegla decl_a_f ( -> accion)\n"); }
+        |         funcion_d decl_a_f { printf("\tRegla decl_a_f ( -> funcion)\n"); }
+        |         %empty { printf("\tRegla decl_a_f ( -> epsilon)\n"); }
         ;
                 
-bloque:           declaraciones instrucciones { printf("Regla bloque"); }
+bloque:           declaraciones instrucciones { printf("\tRegla bloque\n"); }
       ;
                 
-declaraciones:    declaracion_tipo declaraciones { printf("Regla delaraciones ( -> tipo )"); }
-            |     declaracion_cte declaraciones { printf("Regla delaraciones ( -> cte )"); }
-            |     declaracion_var declaraciones {} { printf("Regla delaraciones ( -> var )"); }
-            |     %empty { printf("Regla delaraciones ( -> epsilon )"); }
+declaraciones:    declaracion_tipo declaraciones { printf("\tRegla delaraciones ( -> tipo )\n"); }
+            |     declaracion_cte declaraciones { printf("\tRegla delaraciones ( -> cte )\n"); }
+            |     declaracion_var declaraciones { printf("\tRegla delaraciones ( -> var )\n"); }
+            |     %empty { printf("\tRegla delaraciones ( -> epsilon )\n"); }
             ;
                 
-declaracion_tipo: tk_tipo lista_d_tipo tk_ftipo tk_punto_coma { printf("Regla declaracion_tipo"); }
+declaracion_tipo: tk_tipo lista_d_tipo tk_ftipo tk_punto_coma { printf("\tRegla declaracion_tipo\n"); }
                 ;
                     
-declaracion_cte:  tk_const lista_d_cte tk_fconst tk_punto_coma { printf("Regla declaracion_cte"); }
+declaracion_cte:  tk_const lista_d_cte tk_fconst tk_punto_coma { printf("\tRegla declaracion_cte\n"); }
               ;
 
-declaracion_var:  tk_var lista_d_var tk_fvar tk_punto_coma { printf("Regla declaracion_var"); }
+declaracion_var:  tk_var lista_d_var tk_fvar tk_punto_coma { printf("\tRegla declaracion_var\n"); }
               ;
                     
-lista_d_tipo:     tk_identificador tk_igual d_tipo tk_punto_coma lista_d_tipo { printf("Regla lista_d_tipo"); }
+lista_d_tipo:     tk_identificador tk_igual d_tipo tk_punto_coma lista_d_tipo { printf("\tRegla lista_d_tipo\n"); }
             |      %empty
             ;
                     
-d_tipo:           tk_tupla lista_campos tk_ftupla { printf("Regla d_tipo ( -> tupla )"); }
-      |           tk_tabla tk_corchete_abierto expresion_t tk_subrango  expresion_t tk_corchete_cerrado tk_de d_tipo { printf("Regla d_tipo ( -> tabla )"); }
-      |           tk_identificador { printf("Regla d_tipo ( -> ideidentificador )"); }
-      |           expresion_t tk_subrango expresion_t { printf("Regla d_tipo ( -> expresion )"); }
-      |           tk_ref d_tipo { printf("Regla d_tipo ( -> ref )"); }
-      |           tk_tipo_base { printf("Regla d_tipo ( -> tipo_base )"); }
+d_tipo:           tk_tupla lista_campos tk_ftupla { printf("\tRegla d_tipo ( -> tupla )\n"); }
+      |           tk_tabla tk_corchete_abierto expresion_t tk_subrango  expresion_t tk_corchete_cerrado tk_de d_tipo { printf("\tRegla d_tipo ( -> tabla )\n"); }
+      |           tk_identificador { printf("\tRegla d_tipo ( -> ideidentificador )\n"); }
+      |           expresion_t tk_subrango expresion_t { printf("\tRegla d_tipo ( -> expresion )\n"); }
+      |           tk_ref d_tipo { printf("\tRegla d_tipo ( -> ref )\n"); }
+      |           tk_tipo_base { printf("\tRegla d_tipo ( -> tipo_base )\n"); }
       ;
                                                  
-expresion_t:      expresion { printf("Regla expresion_t ( -> expresion )"); }
-          |       tk_literal_caracter { printf("Regla expresion_t ( -> literal caracter )"); }
+expresion_t:      expresion { printf("\tRegla expresion_t ( -> expresion )\n"); }
+          |       tk_literal_caracter { printf("\tRegla expresion_t ( -> literal caracter )\n"); }
           ;
                     
-lista_campos:     tk_identificador tk_dospuntos d_tipo tk_punto lista_campos { printf("Regla lista_campos ( -> identificador )"); }
-            |     %empty { printf("Regla lista_campos ( -> epsilon )"); }
+lista_campos:     tk_identificador tk_dospuntos d_tipo tk_punto lista_campos { printf("\tRegla lista_campos ( -> identificador )\n"); }
+            |     %empty { printf("\tRegla lista_campos ( -> epsilon )\n"); }
             ;
                     
-lista_d_cte:     tk_identificador tk_igual tk_literal tk_punto_coma lista_d_cte { printf("Regla lista_d_cte ( -> identificador )"); }
-          |      %empty { printf("Regla lista_d_cte ( -> epsilon )"); }
+lista_d_cte:     tk_identificador tk_igual tk_literal tk_punto_coma lista_d_cte { printf("\tRegla lista_d_cte ( -> identificador )\n"); }
+          |      %empty { printf("\tRegla lista_d_cte ( -> epsilon )\n"); }
           ;
                     
-lista_d_var:     lista_id tk_dospuntos tk_identificador tk_punto_coma lista_d_var { printf("Regla lista_d_var ( -> identificador )"); }
-          |      lista_id tk_dospuntos d_tipo tk_punto_coma lista_d_var { printf("Regla lista_d_var ( -> d_tipo )"); }
-          |      %empty { printf("Regla lista_d_var ( -> epsilon )"); }
+lista_d_var:     lista_id tk_dospuntos tk_identificador tk_punto_coma lista_d_var { printf("\tRegla lista_d_var ( -> identificador )\n"); }
+          |      lista_id tk_dospuntos d_tipo tk_punto_coma lista_d_var { printf("\tRegla lista_d_var ( -> d_tipo )\n"); }
+          |      %empty { printf("\tRegla lista_d_var ( -> epsilon )\n"); }
           ;
                     
-lista_id:        tk_identificador tk_coma lista_id { printf("Regla lista_id ( -> identificador , lista )"); }
-        |        tk_identificador { printf("Regla lista_id ( -> identificador)"); }
-        |        %empty { printf("Regla lista_id ( -> epsilon )"); }
+lista_id:        tk_identificador tk_coma lista_id { printf("\tRegla lista_id ( -> identificador , lista )\n"); }
+        |        tk_identificador { printf("\tRegla lista_id ( -> identificador)\n"); }
+        |        %empty { printf("\tRegla lista_id ( -> epsilon )\n"); }
         ;
                     
-decl_ent_sal:    decl_ent { printf("Regla decl_ent_sal ( -> ent )"); }
-            |    decl_ent decl_sal { printf("Regla decl_ent_sal ( -> ent sal )"); }
-            |    decl_sal { printf("Regla decl_ent_sal ( -> sal )"); }
+decl_ent_sal:    decl_ent { printf("\tRegla decl_ent_sal ( -> ent )\n"); }
+            |    decl_ent decl_sal { printf("\tRegla decl_ent_sal ( -> ent sal )\n"); }
+            |    decl_sal { printf("\tRegla decl_ent_sal ( -> sal )\n"); }
             ;
                     
-decl_ent:        tk_ent lista_d_var { printf("Regla decl_ent"); }
+decl_ent:        tk_ent lista_d_var { printf("\tRegla decl_ent\n"); }
         ;
                     
-decl_sal:        tk_sal lista_d_var { printf("Regla decl_sal"); }
+decl_sal:        tk_sal lista_d_var { printf("\tRegla decl_sal\n"); }
         ;
                     
-expresion:       funcion_ll { printf("Regla expresion (-> funcion_ll)"); }
-    |            expresion tk_suma expresion { printf("Regla expresion (-> suma)"); }
-    |            expresion tk_resta expresion { printf("Regla expresion (-> resta)"); }
-    |            expresion tk_multiplicacion expresion { printf("Regla expresion (-> multiplicacion)"); }
-    |            expresion tk_division expresion { printf("Regla expresion (-> division)"); }
-    |            expresion tk_modulo expresion { printf("Regla expresion (-> modulo)"); }
-    |            expresion tk_div expresion { printf("Regla expresion (-> div)"); }
-    |            tk_parentesis_apertura expresion tk_parentesis_cierre { printf("Regla expresion (-> parentesis)"); }
-    |            operando { printf("Regla expresion (-> operando)"); }
-    |            tk_literal_numerico { printf("Regla expresion (-> literal numerico)"); }
-    |            tk_resta expresion %prec tk_menos_unario { printf("Regla expresion (-> menos unario)"); }
-    |            expresion tk_AND expresion { printf("Regla expresion (-> and)"); }
-    |            expresion tk_OR expresion { printf("Regla expresion (-> or)"); }
-    |            tk_NOT expresion { printf("Regla expresion (-> not)"); }
-    |            tk_verdadero { printf("Regla expresion (-> verdadero)"); }
-    |            tk_falso { printf("Regla expresion (-> falso)"); }
-    |            expresion tk_operador_relacional expresion { printf("Regla expresion (-> operador relacional)"); }
+expresion:       funcion_ll { printf("\tRegla expresion (-> funcion_ll)\n"); }
+    |            expresion tk_suma expresion { printf("\tRegla expresion (-> suma)\n"); }
+    |            expresion tk_resta expresion { printf("\tRegla expresion (-> resta)\n"); }
+    |            expresion tk_multiplicacion expresion { printf("\tRegla expresion (-> multiplicacion)\n"); }
+    |            expresion tk_division expresion { printf("\tRegla expresion (-> division)\n"); }
+    |            expresion tk_modulo expresion { printf("\tRegla expresion (-> modulo)\n"); }
+    |            expresion tk_div expresion { printf("\tRegla expresion (-> div)\n"); }
+    |            tk_parentesis_apertura expresion tk_parentesis_cierre { printf("\tRegla expresion (-> parentesis)\n"); }
+    |            operando { printf("\tRegla expresion (-> operando)\n"); }
+    |            tk_literal_numerico { printf("\tRegla expresion (-> literal numerico)\n"); }
+    |            tk_resta expresion %prec tk_menos_unario { printf("\tRegla expresion (-> menos unario)\n"); }
+    |            expresion tk_AND expresion { printf("\tRegla expresion (-> and)\n"); }
+    |            expresion tk_OR expresion { printf("\tRegla expresion (-> or)\n"); }
+    |            tk_NOT expresion { printf("\tRegla expresion (-> not)\n"); }
+    |            tk_verdadero { printf("\tRegla expresion (-> verdadero)\n"); }
+    |            tk_falso { printf("\tRegla expresion (-> falso)\n"); }
+    |            expresion tk_operador_relacional expresion { printf("\tRegla expresion (-> operador relacional)\n"); }
     ;
                     
-operando:        tk_identificador { printf("Regla operando (-> identificador)"); }
-        |        operando tk_punto operando { printf("Regla operando (-> punto)"); }
-        |        operando tk_corchete_abierto expresion tk_corchete_cerrado { printf("Regla operando (-> corchetes)"); }
-        |        operando tk_ref { printf("Regla operando (-> ref)"); }
+operando:        tk_identificador { printf("\tRegla operando (-> identificador)\n"); }
+        |        operando tk_punto operando { printf("\tRegla operando (-> punto)\n"); }
+        |        operando tk_corchete_abierto expresion tk_corchete_cerrado { printf("\tRegla operando (-> corchetes)\n"); }
+        |        operando tk_ref { printf("\tRegla operando (-> ref)\n"); }
         ;
                     
-instrucciones:   instruccion tk_punto_coma instrucciones { printf("Regla instrucciones (-> punto y coma)"); }
-            |    instruccion { printf("Regla instrucciones (-> instruccion)"); }
+instrucciones:   instruccion tk_punto_coma instrucciones { printf("\tRegla instrucciones (-> punto y coma)\n"); }
+            |    instruccion { printf("\tRegla instrucciones (-> instruccion)\n"); }
             ;
                     
-instruccion:     tk_continuar { printf("Regla instruccion (-> continuar)"); }
-          |      asignacion { printf("Regla instruccion (-> asignacion)"); }
-          |      alternativa { printf("Regla instruccion (-> alternativa)"); }
-          |      iteracion { printf("Regla instruccion (-> iteracion)"); }
-          |      accion_ll { printf("Regla instruccion (-> accion_ll)"); }
+instruccion:     tk_continuar { printf("\tRegla instruccion (-> continuar)\n"); }
+          |      asignacion { printf("\tRegla instruccion (-> asignacion)\n"); }
+          |      alternativa { printf("\tRegla instruccion (-> alternativa)\n"); }
+          |      iteracion { printf("\tRegla instruccion (-> iteracion)\n"); }
+          |      accion_ll { printf("\tRegla instruccion (-> accion_ll)\n"); }
           ;
                     
-asignacion:      operando tk_asignacion expresion { printf("Regla asignacion"); }
+asignacion:      operando tk_asignacion expresion { printf("\tRegla asignacion\n"); }
           ;
                     
-alternativa:     tk_si expresion tk_entonces instrucciones lista_opciones tk_fsi { printf("Regla alternativa"); }
+alternativa:     tk_si expresion tk_entonces instrucciones lista_opciones tk_fsi { printf("\tRegla alternativa\n"); }
           ;
                     
-lista_opciones:  tk_sino expresion tk_entonces instrucciones lista_opciones { printf("Regla lista_opciones (-> sino)"); }
-             |   %empty { printf("Regla alternativa (-> epsilon)"); }
+lista_opciones:  tk_sino expresion tk_entonces instrucciones lista_opciones { printf("\tRegla lista_opciones (-> sino)\n"); }
+             |   %empty { printf("\tRegla alternativa (-> epsilon)\n"); }
              ;
                     
-iteracion:       it_cota_fija { printf("Regla iteracion (-> cota fija)"); }
-         |       it_cota_exp  { printf("Regla iteracion (-> cota expresion)"); }
+iteracion:       it_cota_fija { printf("\tRegla iteracion (-> cota fija)\n"); }
+         |       it_cota_exp  { printf("\tRegla iteracion (-> cota expresion)\n"); }
          ;
                     
-it_cota_exp:     tk_mientras expresion tk_hacer instrucciones tk_fmientras { printf("Regla it_cota_exp"); }
+it_cota_exp:     tk_mientras expresion tk_hacer instrucciones tk_fmientras { printf("\tRegla it_cota_exp\n"); }
            ;
                     
-it_cota_fija:    tk_para tk_identificador tk_asignacion expresion tk_hasta expresion tk_hacer instrucciones tk_fpara { printf("Regla it_cota_fija"); }
+it_cota_fija:    tk_para tk_identificador tk_asignacion expresion tk_hasta expresion tk_hacer instrucciones tk_fpara { printf("\tRegla it_cota_fija\n"); }
             ;
                     
-accion_d:        tk_accion a_cabecera bloque tk_faccion { printf("Regla accion_d"); }
+accion_d:        tk_accion a_cabecera bloque tk_faccion { printf("\tRegla accion_d\n"); }
         ;
         
-funcion_d:       tk_funcion f_cabecera bloque tk_dev expresion tk_ffuncion { printf("Regla funcion_d"); }
+funcion_d:       tk_funcion f_cabecera bloque tk_dev expresion tk_ffuncion { printf("\tRegla funcion_d\n"); }
         ;
                     
-a_cabecera:      tk_identificador tk_parentesis_apertura d_par_form tk_parentesis_cierre tk_punto_coma { printf("Regla a_cabecera"); }
+a_cabecera:      tk_identificador tk_parentesis_apertura d_par_form tk_parentesis_cierre tk_punto_coma { printf("\tRegla a_cabecera\n"); }
           ;
                     
-f_cabecera:      tk_identificador tk_parentesis_apertura lista_d_var tk_parentesis_cierre tk_dev d_tipo tk_punto_coma { printf("Regla f_cabecera"); }
+f_cabecera:      tk_identificador tk_parentesis_apertura lista_d_var tk_parentesis_cierre tk_dev d_tipo tk_punto_coma { printf("\tRegla f_cabecera\n"); }
           ;
                     
-d_par_form:      d_p_form tk_punto_coma d_par_form { printf("Regla d_par_form (-> punto y coma)"); }
-          |      %empty { printf("Regla d_par_form (-> epsilon)"); }
+d_par_form:      d_p_form tk_punto_coma d_par_form { printf("\tRegla d_par_form (-> punto y coma)\n"); }
+          |      %empty { printf("\tRegla d_par_form (-> epsilon)\n"); }
           ;
                     
-d_p_form:        tk_ent lista_id tk_dospuntos d_tipo { printf("Regla d_p_form (-> ent)"); }
-        |        tk_sal lista_id tk_dospuntos d_tipo { printf("Regla d_p_form (-> sal)"); }
-        |        tk_ent_sal lista_id tk_dospuntos d_tipo { printf("Regla d_p_form (-> ent_sal)"); }
+d_p_form:        tk_ent lista_id tk_dospuntos d_tipo { printf("\tRegla d_p_form (-> ent)\n"); }
+        |        tk_sal lista_id tk_dospuntos d_tipo { printf("\tRegla d_p_form (-> sal)\n"); }
+        |        tk_ent_sal lista_id tk_dospuntos d_tipo { printf("\tRegla d_p_form (-> ent_sal)\n"); }
         ;
                     
-accion_ll:       tk_identificador tk_parentesis_apertura l_ll tk_parentesis_cierre { printf("Regla accion_ll"); }
+accion_ll:       tk_identificador tk_parentesis_apertura l_ll tk_parentesis_cierre { printf("\tRegla accion_ll\n"); }
         ;
                     
-funcion_ll:      tk_identificador tk_parentesis_apertura l_ll tk_parentesis_cierre { printf("Regla funcion_ll"); }
+funcion_ll:      tk_identificador tk_parentesis_apertura l_ll tk_parentesis_cierre { printf("\tRegla funcion_ll\n"); }
           ;
                     
-l_ll:            expresion tk_coma l_ll { printf("Regla l_ll (-> coma)"); }
-    |            expresion { printf("Regla l_ll (-> expresion)"); }
+l_ll:            expresion tk_coma l_ll { printf("\tRegla l_ll (-> coma)\n"); }
+    |            expresion { printf("\tRegla l_ll (-> expresion)\n"); }
     ;
 
 %%
+int main(void)
+{
+        yyparse();
+}
 void yyerror (char const *s)
 {
   fprintf (stderr, "%s\n", s);

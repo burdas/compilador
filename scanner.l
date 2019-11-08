@@ -24,7 +24,6 @@ VERDADERO				?i:(verdadeo)
 FALSO					?i:(falso)
 LITERAL_CARACTER        \"{LETRA_O_CIFRA}\"
 LITERAL_CADENA          '(\\.|[^'\\])*'|\/'.*
-
 COMENTARIO              \{[^}]*\}
 
 /* Operadores*/
@@ -203,6 +202,7 @@ CFTIPO                  ?i:(ftipo)
 
 {COMENTARIO} {
             printf("Comentario: %s\n", yytext);
+			return tk_comentario;
 }
 
 {ASIGNACION} {
@@ -420,7 +420,7 @@ CFTIPO                  ?i:(ftipo)
 .           printf( "Token desconocido: %s\n", yytext );
 
 %%
-
+/*
 int main( int argc, char **argv )
     {
     ++argv, --argc;  
@@ -429,3 +429,4 @@ int main( int argc, char **argv )
 
     yylex();
     }
+*/
