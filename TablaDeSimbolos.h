@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 typedef struct Simbolo{
+    int indice;
     char* identificador;
     char* tipo;
     struct Simbolo* siguiente;
@@ -11,7 +12,7 @@ typedef struct Simbolo{
 
 typedef struct TablaDeSimbolos{
     struct Simbolo* primero;
-    struct Simbolo* ultimo;
+    int num_simbolos;
 } TablaDeSimbolos;
 
 Simbolo* nuevoSimbolo(char* identificador, char* tipo);

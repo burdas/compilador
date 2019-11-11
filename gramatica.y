@@ -8,10 +8,11 @@
 /* Bison declarations. */
 %token tk_algoritmo
 %token tk_identificador
+%token tk_precondicion
+%token tk_postcondicion
 %token tk_punto_coma
 %token tk_punto
 %token tk_falgoritmo
-%token tk_comentario
 %token tk_tipo
 %token tk_ftipo
 %token tk_const
@@ -68,13 +69,13 @@
 %%
 /* The grammar follows. */
 
-desc_algoritmo:   tk_algoritmo tk_identificador tk_punto_coma cabecera_alg bloque_alg tk_falgoritmo tk_punto { printf("\tRegla desc_algoritmo\n");}
+desc_algoritmo:   tk_algoritmo tk_identificador tk_punto_coma cabecera_alg bloque_alg tk_falgoritmo { printf("\tRegla desc_algoritmo\n");}
               ;
                 
-cabecera_alg:     decl_globales decl_a_f decl_ent_sal tk_comentario { printf("\tRegla cabecera_alg\n"); }
+cabecera_alg:     decl_globales decl_a_f decl_ent_sal tk_precondicion { printf("\tRegla cabecera_alg\n"); }
             ;
                 
-bloque_alg:       bloque tk_comentario { printf("\tRegla bloque_alg\n"); }
+bloque_alg:       bloque tk_postcondicion { printf("\tRegla bloque_alg\n"); }
           ;
                 
 decl_globales:    declaracion_tipo decl_globales { printf("\tRegla decl_globales ( -> tipo )\n"); }
@@ -129,9 +130,8 @@ lista_d_cte:     tk_identificador tk_igual tk_literal tk_punto_coma lista_d_cte 
           |      %empty { printf("\tRegla lista_d_cte ( -> epsilon )\n"); }
           ;
                     
-lista_d_var:     lista_id tk_dospuntos tk_identificador tk_punto_coma lista_d_var { printf("\tRegla lista_d_var ( -> identificador )\n"); }
-          |      lista_id tk_dospuntos d_tipo tk_punto_coma lista_d_var { printf("\tRegla lista_d_var ( -> d_tipo )\n"); }
-          |      %empty { printf("\tRegla lista_d_var ( -> epsilon )\n"); }
+lista_d_var:     lista_id tk_dospuntos d_tipo tk_punto_coma lista_d_var { printf("\tRegla lista_d_var ( -> d_tipo )\n"); }
+          |      %empty { printf("\tRegla lista_d_var ( -> epsilon )\n"); } 
           ;
                     
 lista_id:        tk_identificador tk_coma lista_id { printf("\tRegla lista_id ( -> identificador , lista )\n"); }

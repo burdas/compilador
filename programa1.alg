@@ -4,7 +4,7 @@ algoritmo intercambio;
 {Prec: a= A AND b = B}
     var
         aux: entero;
-    fvar
+    fvar;
     aux:= a;
     a:= b;
     b:= aux

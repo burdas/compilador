@@ -41,6 +41,7 @@ OPERADOR_NOT					?i:(no)
 ASIGNACION              ":="
 COMPOSICION_SECUENCIAL  ";"
 SEPARADOR               ","
+PUNTO					"."
 SUBRANGO                ".."
 DEFINICION_TIPO         ":"
 INICIO_ARRAY            "["
@@ -119,7 +120,7 @@ CFTIPO                  ?i:(ftipo)
 }
 
 {LITERAL_REAL} {
-            printf("Literal real: %s (%d)\n", yytext, atof(yytext));
+            printf("Literal real: %s (%f)\n", yytext, atof(yytext));
 			return tk_literal_numerico;
 }
 
@@ -194,15 +195,17 @@ CFTIPO                  ?i:(ftipo)
 
 {PREC}	{
 			printf ("Precondición: %s \n", yytext);
+			return tk_precondicion;
 }
 
 {POST}	{
 			printf ("Postcondición: %s \n", yytext);
+			return tk_postcondicion;
 }
 
 {COMENTARIO} {
             printf("Comentario: %s\n", yytext);
-			return tk_comentario;
+			//return tk_comentario;
 }
 
 {ASIGNACION} {
@@ -213,6 +216,11 @@ CFTIPO                  ?i:(ftipo)
 {COMPOSICION_SECUENCIAL} {
             printf("Composición secuencial: %s\n", yytext);
 			return tk_punto_coma;
+}
+
+{PUNTO} {
+            printf("Punto: %s\n", yytext);
+			return tk_punto;
 }
 
 {SEPARADOR} {
