@@ -34,6 +34,24 @@ void insertarSimbolo (TablaDeSimbolos* tabla, Simbolo* simboloAIntroducir){
     simboloAIntroducir->indice = tabla->num_simbolos;
 }
 
+int buscarSimbolo(char* identificadorABuscar, TablaDeSimbolos* tabla){
+    int estaEnLaTabla = 0;
+    Simbolo* indice = tabla->primero;
+    while (estaEnLaTabla == 0 && indice->siguiente != NULL)
+    {
+        if (strcmp(indice->identificador, identificadorABuscar) == 0)
+        {
+            estaEnLaTabla = 1;
+        }
+        indice = indice->siguiente;
+    }
+    if (strcmp(indice->identificador, identificadorABuscar) == 0)
+    {
+        estaEnLaTabla = 1;
+    }
+    return estaEnLaTabla;
+}
+
 void mostrarTabla(TablaDeSimbolos* tabla){
     printf("/------------------------------------------------------\\\n");
     printf("|                    Tabla de Simbolos                 |\n");

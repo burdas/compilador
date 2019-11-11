@@ -19,3 +19,4 @@ Simbolo* nuevoSimbolo(char* identificador, char* tipo);
 void insertarSimbolo (TablaDeSimbolos* tabla, Simbolo* simboloAIntroducir);
 void mostrarTabla(TablaDeSimbolos* tabla);
 TablaDeSimbolos* nuevaTablaDeSimbolos();
+int buscarSimbolo(char* identificadorABuscar, TablaDeSimbolos* tabla);

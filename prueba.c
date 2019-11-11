@@ -16,5 +16,7 @@ int main(){
 
     mostrarTabla(tabla);
 
+    printf("Esta en la tabla: %d\n", buscarSimbolo("simbolo6", tabla));
+
     return 0;
 }
