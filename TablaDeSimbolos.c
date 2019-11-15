@@ -37,17 +37,20 @@ void insertarSimbolo (TablaDeSimbolos* tabla, Simbolo* simboloAIntroducir){
 int buscarSimbolo(char* identificadorABuscar, TablaDeSimbolos* tabla){
     int estaEnLaTabla = 0;
     Simbolo* indice = tabla->primero;
-    while (estaEnLaTabla == 0 && indice->siguiente != NULL)
+    if (indice != NULL)
     {
+        while (estaEnLaTabla == 0 && indice->siguiente != NULL)
+        {
+            if (strcmp(indice->identificador, identificadorABuscar) == 0)
+            {
+                estaEnLaTabla = 1;
+            }
+            indice = indice->siguiente;
+        }
         if (strcmp(indice->identificador, identificadorABuscar) == 0)
         {
             estaEnLaTabla = 1;
         }
-        indice = indice->siguiente;
-    }
-    if (strcmp(indice->identificador, identificadorABuscar) == 0)
-    {
-        estaEnLaTabla = 1;
     }
     return estaEnLaTabla;
 }

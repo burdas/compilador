@@ -12,9 +12,13 @@ compilar_flex: lex.yy.c
 	gcc -c lex.yy.c
 	@echo "-> Compilando lex.yy.c correctamente"
 
-compilar_bison: gramatica.tab.c lex.yy.o
-	gcc gramatica.tab.c lex.yy.o -lfl -lm
+compilar_bison: gramatica.tab.c lex.yy.o TablaDeSimbolos.o
+	gcc gramatica.tab.c lex.yy.o TablaDeSimbolos.o -lfl -lm
 	@echo "-> Generado archivo ejecutable a.out correctamente"
+
+compilar_TablaDeSimbolos: TablaDeSimbolos.c
+	gcc -c TablaDeSimbolos.c
+	@echo "-> Compilando TablaDeSimbolos.c correctamente"
 	
 clean: lex.yy.c a.out lex.yy.o gramatica.tab.c gramatica.output
 	rm lex.yy.c a.out gramatica.tab.c lex.yy.o gramatica.output

@@ -111,6 +111,7 @@ CFTIPO                  ?i:(ftipo)
 
 {TIPO_DE_DATOS} {
             printf("Tipo de datos: %s\n", yytext);
+			yylval.uString = strdup(yytext);
 			return tk_tipo_base;
 }
 
@@ -420,6 +421,7 @@ CFTIPO                  ?i:(ftipo)
 
 {IDENTIFICADOR}	{
 			printf( "Identificador: %s\n", yytext );
+			yylval.uString = strdup(yytext);
 			return tk_identificador;
 }
 

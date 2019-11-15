@@ -1,13 +1,24 @@
 %{
-  #include <math.h>
   #include <stdio.h>
+  #include "TablaDeSimbolos.h"
+  #include <string.h>
   int yylex (void);
   void yyerror (char const *);
-%}
 
-/* Bison declarations. */
+  TablaDeSimbolos* tabla_simbolos;
+
+  typedef struct ListaStrings{
+        char* string;
+        struct ListaStrings* siguiente;
+  }ListaStrings;
+%}
+%union{
+	char* uString;
+        struct ListaStrings* uListaStrings;
+}
+
 %token tk_algoritmo
-%token tk_identificador
+%token<uString> tk_identificador
 %token tk_precondicion
 %token tk_postcondicion
 %token tk_punto_coma
@@ -28,7 +39,7 @@
 %token tk_corchete_abierto
 %token tk_corchete_cerrado
 %token tk_ref
-%token tk_tipo_base
+%token<uString> tk_tipo_base
 %token tk_literal_caracter
 %token tk_literal
 %token tk_coma
@@ -65,6 +76,9 @@
 %token tk_ffuncion
 %token tk_dev
 %token tk_subrango
+
+%type<uString>d_tipo
+%type<uListaStrings>lista_id
 
 %%
 /* The grammar follows. */
@@ -110,12 +124,27 @@ lista_d_tipo:     tk_identificador tk_igual d_tipo tk_punto_coma lista_d_tipo { 
             |      %empty
             ;
                     
-d_tipo:           tk_tupla lista_campos tk_ftupla { printf("\tRegla d_tipo ( -> tupla )\n"); }
-      |           tk_tabla tk_corchete_abierto expresion_t tk_subrango  expresion_t tk_corchete_cerrado tk_de d_tipo { printf("\tRegla d_tipo ( -> tabla )\n"); }
-      |           tk_identificador { printf("\tRegla d_tipo ( -> ideidentificador )\n"); }
-      |           expresion_t tk_subrango expresion_t { printf("\tRegla d_tipo ( -> expresion )\n"); }
+d_tipo:           tk_tupla lista_campos tk_ftupla { 
+                        printf("\tRegla d_tipo ( -> tupla )\n");
+                        $$ = "tupla"; 
+                }
+      |           tk_tabla tk_corchete_abierto expresion_t tk_subrango  expresion_t tk_corchete_cerrado tk_de d_tipo {
+                        printf("\tRegla d_tipo ( -> tabla )\n");
+                        $$ = "tabla"; 
+                }
+      |           tk_identificador {
+                        printf("\tRegla d_tipo ( -> ideidentificador )\n");
+                        $$ = strdup($1);
+                }
+      |           expresion_t tk_subrango expresion_t {
+                        printf("\tRegla d_tipo ( -> expresion )\n");
+                        $$ = "expresion";
+                }
       |           tk_ref d_tipo { printf("\tRegla d_tipo ( -> ref )\n"); }
-      |           tk_tipo_base { printf("\tRegla d_tipo ( -> tipo_base )\n"); }
+      |           tk_tipo_base {
+                        printf("\tRegla d_tipo ( -> tipo_base )\n");
+                        $$ = strdup($1);
+                }
       ;
                                                  
 expresion_t:      expresion { printf("\tRegla expresion_t ( -> expresion )\n"); }
@@ -130,12 +159,45 @@ lista_d_cte:     tk_identificador tk_igual tk_literal tk_punto_coma lista_d_cte 
           |      %empty { printf("\tRegla lista_d_cte ( -> epsilon )\n"); }
           ;
                     
-lista_d_var:     lista_id tk_dospuntos d_tipo tk_punto_coma lista_d_var { printf("\tRegla lista_d_var ( -> d_tipo )\n"); }
+lista_d_var:     lista_id tk_dospuntos d_tipo tk_punto_coma lista_d_var {
+                        printf("\tRegla lista_d_var ( -> d_tipo )\n");
+                        printf("\t\t--->%d\n", strdup($3));
+                        ListaStrings* listaIdentidicadores = $1;
+                        printf("\t%s\n", listaIdentidicadores->string);
+                        while(listaIdentidicadores->siguiente != NULL){
+                                if(buscarSimbolo(listaIdentidicadores->string, tabla_simbolos) == 0){
+                                        Simbolo* simb = nuevoSimbolo(strdup(listaIdentidicadores->string), strdup($3));
+                                        insertarSimbolo(tabla_simbolos, simb);
+                                }
+                                listaIdentidicadores = listaIdentidicadores->siguiente;
+                        }
+                        if(buscarSimbolo(listaIdentidicadores->string, tabla_simbolos) == 0){
+                                Simbolo* simb = nuevoSimbolo(strdup(listaIdentidicadores->string), strdup($3));
+                                insertarSimbolo(tabla_simbolos, simb);
+                        }
+                
+                }
           |      %empty { printf("\tRegla lista_d_var ( -> epsilon )\n"); } 
           ;
                     
-lista_id:        tk_identificador tk_coma lista_id { printf("\tRegla lista_id ( -> identificador , lista )\n"); }
-        |        tk_identificador { printf("\tRegla lista_id ( -> identificador)\n"); }
+lista_id:        tk_identificador tk_coma lista_id {
+                        printf("\tRegla lista_id ( -> identificador , lista )\n");
+                        ListaStrings* indice = $3;
+                        ListaStrings* identificadorIntroducir = (ListaStrings*)malloc(sizeof(ListaStrings));
+                        identificadorIntroducir->string = strdup($1);
+                        identificadorIntroducir->siguiente = NULL;
+                        while(indice->siguiente != NULL){
+                                indice = indice->siguiente;
+                        }
+                        indice->siguiente = identificadorIntroducir;
+                        $$ = $3;
+                }
+        |        tk_identificador {
+                        printf("\tRegla lista_id ( -> identificador)\n");
+                        $$ = (ListaStrings*)malloc(sizeof(ListaStrings));
+                        $$->string = strdup($1);
+                        $$->siguiente = NULL;
+                }
         |        %empty { printf("\tRegla lista_id ( -> epsilon )\n"); }
         ;
                     
@@ -240,7 +302,9 @@ l_ll:            expresion tk_coma l_ll { printf("\tRegla l_ll (-> coma)\n"); }
 %%
 int main(void)
 {
+        tabla_simbolos = nuevaTablaDeSimbolos();
         yyparse();
+        mostrarTabla(tabla_simbolos);
 }
 void yyerror (char const *s)
 {
