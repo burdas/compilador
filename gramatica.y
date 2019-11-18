@@ -1,11 +1,13 @@
 %{
   #include <stdio.h>
   #include "TablaDeSimbolos.h"
+  #include "TablaDeCuadruplas.h"
   #include <string.h>
   int yylex (void);
   void yyerror (char const *);
 
   TablaDeSimbolos* tabla_simbolos;
+  TablaDeCuadruplas* tabla_cuadruplas;
 
   typedef struct ListaStrings{
         char* string;
@@ -21,6 +23,7 @@
 %union{
 	char* uString;
         struct ListaStrings* uListaStrings;
+        struct Expresion* uExpresion;
 }
 
 %token tk_algoritmo
@@ -79,12 +82,11 @@
 %token tk_accion
 %token tk_faccion
 %token tk_funcion
-%token tk_ffuncion
-%token tk_dev
-%token tk_subrango
-
+%token tk_ffuncionoperador
 %type<uString>d_tipo
 %type<uListaStrings>lista_id
+%type<uExpresion>expresion
+
 
 %%
 /* The grammar follows. */
@@ -171,10 +173,7 @@ lista_d_var:     lista_id tk_dospuntos d_tipo tk_punto_coma lista_d_var {
                         while(listaIdentidicadores->siguiente != NULL){
                                 if(buscarSimbolo(listaIdentidicadores->string, tabla_simbolos) == 0){
                                         Simbolo* simb = nuevoSimbolo(strdup(listaIdentidicadores->string), strdup($3));
-                                        insertarSimbolo(tabla_simbolos, simb);
-                                }
-                                listaIdentidicadores = listaIdentidicadores->siguiente;
-                        }
+                                        insertarSimbolo(tabla_simoperador
                         if(buscarSimbolo(listaIdentidicadores->string, tabla_simbolos) == 0){
                                 Simbolo* simb = nuevoSimbolo(strdup(listaIdentidicadores->string), strdup($3));
                                 insertarSimbolo(tabla_simbolos, simb);
@@ -217,7 +216,18 @@ decl_sal:        tk_sal lista_d_var { printf("\tRegla decl_sal\n"); }
         ;
                     
 expresion:       funcion_ll { printf("\tRegla expresion (-> funcion_ll)\n"); }
-    |            expresion tk_suma expresion { printf("\tRegla expresion (-> suma)\n"); }
+    |            expresion tk_suma expresion {
+                        printf("\tRegla expresion (-> suma)\n");
+                        Char* tipoExpresion1 = strdup($1.tipo);
+                        Char* tipoExpresion2 = strdup($3.tipo);
+                        if(strcmp(tipoExpresion1, "entero") == 0 &&strcmp(tipoExpresion2, "entero") == 0){
+                                $$->tipo = "entero";
+                                Simbolo* nuevo = newTemp(tabla_simbolos, "entero");
+                                $$->place = nuevo->indice;
+                                gen(tabla_cuadruplas, "suma_enteros",$1->place, $3->place, $$->place);
+                        } else if {}
+
+                }
     |            expresion tk_resta expresion { printf("\tRegla expresion (-> resta)\n"); }
     |            expresion tk_multiplicacion expresion { printf("\tRegla expresion (-> multiplicacion)\n"); }
     |            expresion tk_division expresion { printf("\tRegla expresion (-> division)\n"); }
@@ -307,8 +317,10 @@ l_ll:            expresion tk_coma l_ll { printf("\tRegla l_ll (-> coma)\n"); }
 int main(void)
 {
         tabla_simbolos = nuevaTablaDeSimbolos();
+        tabla_cuadruplas = nuevaTablaDeCuadruplas();
         yyparse();
         mostrarTablaDeSimbolos(tabla_simbolos);
+        mostrarTablaDeCuadruplas(tabla_cuadruplas);
 }
 void yyerror (char const *s)
 {

@@ -23,6 +23,6 @@
 
     Cuadrupla* nuevaCuadrupla(char* operador, int operando1, int operando2, int resultado);
     TablaDeCuadruplas* nuevaTablaDeCuadruplas();
-    void gen(TablaDeCuadruplas* tabla, Cuadrupla* cuadrupla);
+    void gen(TablaDeCuadruplas* tabla, char* operador, int operando1, int operando2, int resultado);
     void mostrarTablaDeCuadruplas(TablaDeCuadruplas* tabla);
 #endif

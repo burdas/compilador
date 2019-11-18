@@ -18,7 +18,8 @@ TablaDeCuadruplas* nuevaTablaDeCuadruplas(){
     nueva->num_cuadruplas = 0;
 }
 
-void gen(TablaDeCuadruplas* tabla, Cuadrupla* cuadrupla){
+void gen(TablaDeCuadruplas* tabla, char* operador, int operando1, int operando2, int resultado){
+    Cuadrupla* cuadrupla = nuevaCuadrupla(operador, operando1, operando2, resultado);
     if (tabla->primero == NULL)
     {
         tabla->primero = cuadrupla;
