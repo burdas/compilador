@@ -64,7 +64,7 @@ int buscarSimbolo(char* identificadorABuscar, TablaDeSimbolos* tabla){
     return estaEnLaTabla;
 }
 
-void mostrarTabla(TablaDeSimbolos* tabla){
+void mostrarTablaDeSimbolos(TablaDeSimbolos* tabla){
     printf("/------------------------------------------------------\\\n");
     printf("|                    Tabla de Simbolos                 |\n");
     printf("+--------+------------------------+--------------------+\n");

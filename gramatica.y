@@ -11,6 +11,12 @@
         char* string;
         struct ListaStrings* siguiente;
   }ListaStrings;
+
+  typedef struct Expresion{
+          int place;
+          char* code;
+          char* tipo;
+  }Expresion;
 %}
 %union{
 	char* uString;
@@ -302,7 +308,7 @@ int main(void)
 {
         tabla_simbolos = nuevaTablaDeSimbolos();
         yyparse();
-        mostrarTabla(tabla_simbolos);
+        mostrarTablaDeSimbolos(tabla_simbolos);
 }
 void yyerror (char const *s)
 {

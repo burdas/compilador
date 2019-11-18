@@ -1,5 +1,5 @@
 /*
- * Fichero en el que se encuentra la tabla de simbolos 
+ * Fichero en el que se declara la tabla de simbolos 
  */
 #ifndef MBIG_TS_H
     #define MBIG_TS_H
@@ -20,7 +20,7 @@
 
     Simbolo* nuevoSimbolo(char* identificador, char* tipo);
     void insertarSimbolo (TablaDeSimbolos* tabla, Simbolo* simboloAIntroducir);
-    void mostrarTabla(TablaDeSimbolos* tabla);
+    void mostrarTablaDeSimbolos(TablaDeSimbolos* tabla);
     TablaDeSimbolos* nuevaTablaDeSimbolos();
     int buscarSimbolo(char* identificadorABuscar, TablaDeSimbolos* tabla);
     Simbolo* newTemp(TablaDeSimbolos* tabla, char* tipoDatos);

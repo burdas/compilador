@@ -29,8 +29,8 @@ clean: lex.yy.c a.out lex.yy.o gramatica.tab.c gramatica.output
 	./a.out < programa$@.alg
 	@echo "/************************************************************************************/"
 
-prueba: prueba.c TablaDeSimbolos.c
-	gcc -c TablaDeSimbolos.c
-	gcc prueba.c TablaDeSimbolos.o -o prueba.out
+prueba: prueba.c TablaDeCuadruplas.c
+	gcc -c TablaDeCuadruplas.c
+	gcc prueba.c TablaDeCuadruplas.o -o prueba.out
 	./prueba.out
-	rm TablaDeSimbolos.o prueba.out
+	rm TablaDeCuadruplas.o prueba.out
