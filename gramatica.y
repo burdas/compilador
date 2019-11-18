@@ -161,9 +161,7 @@ lista_d_cte:     tk_identificador tk_igual tk_literal tk_punto_coma lista_d_cte 
                     
 lista_d_var:     lista_id tk_dospuntos d_tipo tk_punto_coma lista_d_var {
                         printf("\tRegla lista_d_var ( -> d_tipo )\n");
-                        printf("\t\t--->%d\n", strdup($3));
                         ListaStrings* listaIdentidicadores = $1;
-                        printf("\t%s\n", listaIdentidicadores->string);
                         while(listaIdentidicadores->siguiente != NULL){
                                 if(buscarSimbolo(listaIdentidicadores->string, tabla_simbolos) == 0){
                                         Simbolo* simb = nuevoSimbolo(strdup(listaIdentidicadores->string), strdup($3));

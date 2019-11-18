@@ -13,10 +13,14 @@ int main(){
     insertarSimbolo(tabla, simbolo1);
     insertarSimbolo(tabla, simbolo2);
     insertarSimbolo(tabla, simbolo3);
+    newTemp(tabla, "caca");
+    newTemp(tabla, "inigo");
 
     mostrarTabla(tabla);
 
-    printf("Esta en la tabla: %d\n", buscarSimbolo("simbolo6", tabla));
+    printf("Esta en la tabla: %d\n", buscarSimbolo("varTemporal_5", tabla));
+
+    printf("\n\n\n%d\n", tabla->num_simbolos);
 
     return 0;
 }

@@ -1,6 +1,5 @@
 /* Aqui definiremos las funciones de la tabla de simbolos*/
 #include "TablaDeSimbolos.h"
-#include <string.h>
 
 Simbolo* nuevoSimbolo(char* identificador_nuevo, char* tipo_nuevo){
     Simbolo* nuevoSimb = (Simbolo*)malloc(sizeof(Simbolo));
@@ -14,6 +13,7 @@ Simbolo* nuevoSimbolo(char* identificador_nuevo, char* tipo_nuevo){
 TablaDeSimbolos* nuevaTablaDeSimbolos(){
     TablaDeSimbolos* tabla = (TablaDeSimbolos*)malloc(sizeof(TablaDeSimbolos));
     tabla->primero = NULL;
+    tabla->num_simbolos = 0;
     return tabla;
 }
 
@@ -32,6 +32,15 @@ void insertarSimbolo (TablaDeSimbolos* tabla, Simbolo* simboloAIntroducir){
         tabla->num_simbolos++;
     }
     simboloAIntroducir->indice = tabla->num_simbolos;
+}
+
+Simbolo* newTemp(TablaDeSimbolos* tabla, char* tipoDatos){
+    char* nombreSimbolo = (char*)malloc(50*sizeof(char));
+    int idSimbolo = tabla->num_simbolos + 1;
+    snprintf(nombreSimbolo, 50, "varTemporal_%d", idSimbolo);
+    Simbolo* simboloTemporal = nuevoSimbolo(nombreSimbolo, tipoDatos);
+    insertarSimbolo(tabla, simboloTemporal);
+    return simboloTemporal;
 }
 
 int buscarSimbolo(char* identificadorABuscar, TablaDeSimbolos* tabla){

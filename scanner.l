@@ -1,6 +1,6 @@
 /* Scanner de ProAlg (Pseudocódigo)*/
 
-/* Autores:             Marcos Burdaspar y Iñigo García */
+/* Autores:             Marcos Burdaspar e Iñigo García */
 /* 						Grupo 12						*/
 /* Versión Flex:        2.6.4                           */
 
