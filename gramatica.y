@@ -21,6 +21,7 @@
   }Expresion;
 %}
 %union{
+        int uEntero;
 	char* uString;
         struct ListaStrings* uListaStrings;
         struct Expresion* uExpresion;
@@ -82,10 +83,14 @@
 %token tk_accion
 %token tk_faccion
 %token tk_funcion
-%token tk_ffuncionoperador
+%token tk_ffuncion
+%token tk_dev
+%token tk_subrango
+
 %type<uString>d_tipo
 %type<uListaStrings>lista_id
 %type<uExpresion>expresion
+%type<uEntero>operando
 
 
 %%
@@ -171,14 +176,16 @@ lista_d_var:     lista_id tk_dospuntos d_tipo tk_punto_coma lista_d_var {
                         printf("\tRegla lista_d_var ( -> d_tipo )\n");
                         ListaStrings* listaIdentidicadores = $1;
                         while(listaIdentidicadores->siguiente != NULL){
-                                if(buscarSimbolo(listaIdentidicadores->string, tabla_simbolos) == 0){
+                                if(buscarSimbolo(listaIdentidicadores->string, tabla_simbolos) == -1){
                                         Simbolo* simb = nuevoSimbolo(strdup(listaIdentidicadores->string), strdup($3));
-                                        insertarSimbolo(tabla_simoperador
-                        if(buscarSimbolo(listaIdentidicadores->string, tabla_simbolos) == 0){
+                                        insertarSimbolo(tabla_simbolos, simb);
+                                }
+                                listaIdentidicadores = listaIdentidicadores->siguiente;
+                        }
+                        if(buscarSimbolo(listaIdentidicadores->string, tabla_simbolos) == -1){
                                 Simbolo* simb = nuevoSimbolo(strdup(listaIdentidicadores->string), strdup($3));
                                 insertarSimbolo(tabla_simbolos, simb);
-                        }
-                
+                        }                
                 }
           |      %empty { printf("\tRegla lista_d_var ( -> epsilon )\n"); } 
           ;
@@ -218,14 +225,30 @@ decl_sal:        tk_sal lista_d_var { printf("\tRegla decl_sal\n"); }
 expresion:       funcion_ll { printf("\tRegla expresion (-> funcion_ll)\n"); }
     |            expresion tk_suma expresion {
                         printf("\tRegla expresion (-> suma)\n");
-                        Char* tipoExpresion1 = strdup($1.tipo);
-                        Char* tipoExpresion2 = strdup($3.tipo);
+                        printf("\t\t-->Tipo1: %s Tipo2: %s\n", $1->tipo, $3->tipo);
+                        char* tipoExpresion1 = strdup($1->tipo);
+                        char* tipoExpresion2 = strdup($3->tipo);
                         if(strcmp(tipoExpresion1, "entero") == 0 &&strcmp(tipoExpresion2, "entero") == 0){
                                 $$->tipo = "entero";
                                 Simbolo* nuevo = newTemp(tabla_simbolos, "entero");
                                 $$->place = nuevo->indice;
                                 gen(tabla_cuadruplas, "suma_enteros",$1->place, $3->place, $$->place);
-                        } else if {}
+                        } else if(strcmp(tipoExpresion1, "entero") == 0 &&strcmp(tipoExpresion2, "real") == 0) {
+                               $$->tipo = "real";
+                                Simbolo* nuevo = newTemp(tabla_simbolos, "real");
+                                $$->place = nuevo->indice;
+                                gen(tabla_cuadruplas, "suma_real",$1->place, $3->place, $$->place); 
+                        } else if(strcmp(tipoExpresion1, "real") == 0 &&strcmp(tipoExpresion2, "entero") == 0) {
+                               $$->tipo = "real";
+                                Simbolo* nuevo = newTemp(tabla_simbolos, "real");
+                                $$->place = nuevo->indice;
+                                gen(tabla_cuadruplas, "suma_real",$1->place, $3->place, $$->place); 
+                        } else if(strcmp(tipoExpresion1, "real") == 0 &&strcmp(tipoExpresion2, "real") == 0) {
+                               $$->tipo = "real";
+                                Simbolo* nuevo = newTemp(tabla_simbolos, "real");
+                                $$->place = nuevo->indice;
+                                gen(tabla_cuadruplas, "suma_real",$1->place, $3->place, $$->place); 
+                        }
 
                 }
     |            expresion tk_resta expresion { printf("\tRegla expresion (-> resta)\n"); }
@@ -234,7 +257,12 @@ expresion:       funcion_ll { printf("\tRegla expresion (-> funcion_ll)\n"); }
     |            expresion tk_modulo expresion { printf("\tRegla expresion (-> modulo)\n"); }
     |            expresion tk_div expresion { printf("\tRegla expresion (-> div)\n"); }
     |            tk_parentesis_apertura expresion tk_parentesis_cierre { printf("\tRegla expresion (-> parentesis)\n"); }
-    |            operando { printf("\tRegla expresion (-> operando)\n"); }
+    |            operando {
+                        printf("\tRegla expresion (-> operando)\n");
+                        $$ = (Expresion*)malloc(sizeof(Expresion));
+                        $$->place = $1;
+		        $$->tipo = consultarTipo(tabla_simbolos, $1);
+                }
     |            tk_literal_numerico { printf("\tRegla expresion (-> literal numerico)\n"); }
     |            tk_resta expresion %prec tk_menos_unario { printf("\tRegla expresion (-> menos unario)\n"); }
     |            expresion tk_AND expresion { printf("\tRegla expresion (-> and)\n"); }
@@ -245,7 +273,10 @@ expresion:       funcion_ll { printf("\tRegla expresion (-> funcion_ll)\n"); }
     |            expresion tk_operador_relacional expresion { printf("\tRegla expresion (-> operador relacional)\n"); }
     ;
                     
-operando:        tk_identificador { printf("\tRegla operando (-> identificador)\n"); }
+operando:        tk_identificador {
+                        printf("\tRegla operando (-> identificador)\n");
+                        $$ = buscarSimbolo($1, tabla_simbolos);
+                }
         |        operando tk_punto operando { printf("\tRegla operando (-> punto)\n"); }
         |        operando tk_corchete_abierto expresion tk_corchete_cerrado { printf("\tRegla operando (-> corchetes)\n"); }
         |        operando tk_ref { printf("\tRegla operando (-> ref)\n"); }

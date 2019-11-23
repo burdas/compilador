@@ -44,29 +44,47 @@ Simbolo* newTemp(TablaDeSimbolos* tabla, char* tipoDatos){
 }
 
 int buscarSimbolo(char* identificadorABuscar, TablaDeSimbolos* tabla){
-    int estaEnLaTabla = 0;
+    // Devuleve el id del simbolo si este se encuentra en la tabla y -1 en caso contrario
+    int estaEnLaTabla = -1;
     Simbolo* indice = tabla->primero;
     if (indice != NULL)
     {
-        while (estaEnLaTabla == 0 && indice->siguiente != NULL)
+        while (estaEnLaTabla == -1 && indice->siguiente != NULL)
         {
             if (strcmp(indice->identificador, identificadorABuscar) == 0)
             {
-                estaEnLaTabla = 1;
+                estaEnLaTabla = indice->indice;
             }
             indice = indice->siguiente;
         }
         if (strcmp(indice->identificador, identificadorABuscar) == 0)
         {
-            estaEnLaTabla = 1;
+            estaEnLaTabla = indice->indice;
         }
     }
     return estaEnLaTabla;
 }
 
+char* consultarTipo(TablaDeSimbolos* tabla,int indiceBuscar){
+    char* salida = "NULL";
+    Simbolo* indice = tabla->primero;
+    if (indice != NULL)
+    {
+        while (indice->siguiente != NULL && indice->indice != indiceBuscar){
+            indice = indice->siguiente;
+        }
+        if (indice->indice == indiceBuscar)
+        {
+            salida = strdup(indice->tipo);
+        }
+        
+    }
+    return salida;
+}
+
 void mostrarTablaDeSimbolos(TablaDeSimbolos* tabla){
     printf("/------------------------------------------------------\\\n");
-    printf("|                    Tabla de Simbolos                 |\n");
+    printf("|                   Tabla de Simbolos                  |\n");
     printf("+--------+------------------------+--------------------+\n");
     printf("| indice |     Identificador      |       Tipo         |\n");
     printf("+--------+------------------------+--------------------+\n");

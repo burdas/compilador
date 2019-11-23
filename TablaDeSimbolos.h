@@ -24,4 +24,5 @@
     TablaDeSimbolos* nuevaTablaDeSimbolos();
     int buscarSimbolo(char* identificadorABuscar, TablaDeSimbolos* tabla);
     Simbolo* newTemp(TablaDeSimbolos* tabla, char* tipoDatos);
+    char* consultarTipo(TablaDeSimbolos* tabla,int indiceBuscar);
 #endif

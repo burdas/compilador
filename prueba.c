@@ -1,13 +1,27 @@
 #include "TablaDeCuadruplas.h"
+#include "TablaDeSimbolos.h"
 
 int main(){
 
-    TablaDeCuadruplas* tabla = nuevaTablaDeCuadruplas();
+    TablaDeCuadruplas* tablaCuadruplas = nuevaTablaDeCuadruplas();
+    TablaDeSimbolos* TablaDeSimbolos = nuevaTablaDeSimbolos();
 
-    gen(tabla, "Suma", 1, 2, 3);
-    gen(tabla, "Suma", 2, 4, 8);
-    gen(tabla, "Suma", 3, 6, 9);
+    Simbolo* simb1 = nuevoSimbolo("simb1", "caca");
+    Simbolo* simb2 = nuevoSimbolo("simb2", "supertipo");
+    Simbolo* simb3 = nuevoSimbolo("simb3", "caca");
 
-    printf("-->%d\n",tabla->primero->siguiente->operando1);
+    insertarSimbolo(TablaDeSimbolos, simb1);
+    insertarSimbolo(TablaDeSimbolos, simb2);
+    insertarSimbolo(TablaDeSimbolos, simb3);
+
+    gen(tablaCuadruplas, "Suma", 1, 2, 3);
+    gen(tablaCuadruplas, "Suma", 2, 4, 8);
+    gen(tablaCuadruplas, "Suma", 3, 6, 9);
+
+    mostrarTablaDeSimbolos(TablaDeSimbolos);
+
+    printf("-->%d\n",tablaCuadruplas->primero->siguiente->operando1);
+    printf("-->%d\n",buscarSimbolo("simb2", TablaDeSimbolos));
+    printf("-->%s\n", consultartipo(TablaDeSimbolos, 2));
     return 0;
 }

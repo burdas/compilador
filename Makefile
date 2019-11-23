@@ -1,4 +1,4 @@
-default: flex bison compilar_flex compilar_bison
+default: flex bison compilar_flex compilar_TablaDeSimbolos compilar_TablaDeCuadruplas compilar_bison
 
 bison: gramatica.y
 	bison -v -d gramatica.y
@@ -12,25 +12,30 @@ compilar_flex: lex.yy.c
 	gcc -c lex.yy.c
 	@echo "-> Compilando lex.yy.c correctamente"
 
-compilar_bison: gramatica.tab.c lex.yy.o TablaDeSimbolos.o
-	gcc gramatica.tab.c lex.yy.o TablaDeSimbolos.o -lfl -lm
+compilar_bison: gramatica.tab.c lex.yy.o TablaDeSimbolos.o TablaDeCuadruplas.o
+	gcc gramatica.tab.c lex.yy.o TablaDeSimbolos.o TablaDeCuadruplas.o -lfl -lm
 	@echo "-> Generado archivo ejecutable a.out correctamente"
 
 compilar_TablaDeSimbolos: TablaDeSimbolos.c
 	gcc -c TablaDeSimbolos.c
 	@echo "-> Compilando TablaDeSimbolos.c correctamente"
+
+compilar_TablaDeCuadruplas: TablaDeCuadruplas.c
+	gcc -c TablaDeCuadruplas.c
+	@echo "-> Compilando TablaDeCuadruplas.c correctamente"
 	
-clean: lex.yy.c a.out lex.yy.o gramatica.tab.c gramatica.output
-	rm lex.yy.c a.out gramatica.tab.c lex.yy.o gramatica.output
+clean: lex.yy.c a.out lex.yy.o gramatica.tab.c gramatica.output TablaDeSimbolos.o TablaDeCuadruplas.o
+	rm lex.yy.c a.out gramatica.tab.c lex.yy.o gramatica.output TablaDeSimbolos.o TablaDeCuadruplas.o
 	@echo "-> Se han eliminado los archivos correctamente"
 
 %: default programa%.alg
-	@echo "/***************************** Programa$@.alg ***************************************/"
+	@echo "/***************************** Programa$@.alg ***************************************\\"
 	./a.out < programa$@.alg
-	@echo "/************************************************************************************/"
+	@echo "\\***************************** Programa$@.alg ***************************************/"
 
-prueba: prueba.c TablaDeCuadruplas.c
+prueba: prueba.c TablaDeCuadruplas.c TablaDeSimbolos.c
 	gcc -c TablaDeCuadruplas.c
-	gcc prueba.c TablaDeCuadruplas.o -o prueba.out
+	gcc -c TablaDeSimbolos.c
+	gcc prueba.c TablaDeCuadruplas.o TablaDeSimbolos.o -o prueba.out
 	./prueba.out
-	rm TablaDeCuadruplas.o prueba.out
+	rm TablaDeCuadruplas.o TablaDeSimbolos.o prueba.out
