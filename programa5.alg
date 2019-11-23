@@ -1,7 +1,7 @@
 algoritmo sumacomb;
     ent n: entero; m: real;
-    sal suma: entero;
+    sal salida: real;
 {Prec: precondicion}
-    suma := m + n + m
+    salida := (n*(n * n)) / n
 {Post: postcondicion}
 falgoritmo

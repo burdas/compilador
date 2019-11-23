@@ -225,38 +225,154 @@ decl_sal:        tk_sal lista_d_var { printf("\tRegla decl_sal\n"); }
 expresion:       funcion_ll { printf("\tRegla expresion (-> funcion_ll)\n"); }
     |            expresion tk_suma expresion {
                         printf("\tRegla expresion (-> suma)\n");
-                        printf("\t\t-->Tipo1: %s Tipo2: %s\n", $1->tipo, $3->tipo);
+                        int placeO1 = $1->place;
+                        int placeO2 = $3->place;
                         char* tipoExpresion1 = strdup($1->tipo);
                         char* tipoExpresion2 = strdup($3->tipo);
-                        if(strcmp(tipoExpresion1, "entero") == 0 &&strcmp(tipoExpresion2, "entero") == 0){
+                        if(strcmp(tipoExpresion1, "entero") == 0 && strcmp(tipoExpresion2, "entero") == 0){
                                 $$->tipo = "entero";
                                 Simbolo* nuevo = newTemp(tabla_simbolos, "entero");
                                 $$->place = nuevo->indice;
-                                gen(tabla_cuadruplas, "suma_enteros",$1->place, $3->place, $$->place);
-                        } else if(strcmp(tipoExpresion1, "entero") == 0 &&strcmp(tipoExpresion2, "real") == 0) {
-                               $$->tipo = "real";
+                                gen(tabla_cuadruplas, "suma_enteros",placeO1, placeO2, $$->place);
+                        } else if(strcmp(tipoExpresion1, "entero") == 0 && strcmp(tipoExpresion2, "real") == 0) {
+                                $$->tipo = "real";
                                 Simbolo* nuevo = newTemp(tabla_simbolos, "real");
                                 $$->place = nuevo->indice;
-                                gen(tabla_cuadruplas, "suma_real",$1->place, $3->place, $$->place); 
-                        } else if(strcmp(tipoExpresion1, "real") == 0 &&strcmp(tipoExpresion2, "entero") == 0) {
-                               $$->tipo = "real";
+                                gen(tabla_cuadruplas, "entero_a_real", placeO1, -1, $$->place);
+                                gen(tabla_cuadruplas, "suma_real",$$->place, placeO2, $$->place); 
+                        } else if(strcmp(tipoExpresion1, "real") == 0 && strcmp(tipoExpresion2, "entero") == 0) {
+                                $$->tipo = "real";
                                 Simbolo* nuevo = newTemp(tabla_simbolos, "real");
                                 $$->place = nuevo->indice;
-                                gen(tabla_cuadruplas, "suma_real",$1->place, $3->place, $$->place); 
-                        } else if(strcmp(tipoExpresion1, "real") == 0 &&strcmp(tipoExpresion2, "real") == 0) {
-                               $$->tipo = "real";
+                                gen(tabla_cuadruplas, "entero_a_real", placeO2, -1, $$->place);
+                                gen(tabla_cuadruplas, "suma_real",placeO1, $$->place, $$->place); 
+                        } else if(strcmp(tipoExpresion1, "real") == 0 && strcmp(tipoExpresion2, "real") == 0) {
+                                $$->tipo = "real";
                                 Simbolo* nuevo = newTemp(tabla_simbolos, "real");
                                 $$->place = nuevo->indice;
-                                gen(tabla_cuadruplas, "suma_real",$1->place, $3->place, $$->place); 
+                                gen(tabla_cuadruplas, "suma_real",placeO1, placeO2, $$->place); 
                         }
-
                 }
-    |            expresion tk_resta expresion { printf("\tRegla expresion (-> resta)\n"); }
-    |            expresion tk_multiplicacion expresion { printf("\tRegla expresion (-> multiplicacion)\n"); }
-    |            expresion tk_division expresion { printf("\tRegla expresion (-> division)\n"); }
-    |            expresion tk_modulo expresion { printf("\tRegla expresion (-> modulo)\n"); }
-    |            expresion tk_div expresion { printf("\tRegla expresion (-> div)\n"); }
-    |            tk_parentesis_apertura expresion tk_parentesis_cierre { printf("\tRegla expresion (-> parentesis)\n"); }
+    |            expresion tk_resta expresion {
+                        printf("\tRegla expresion (-> resta)\n");
+                        int placeO1 = $1->place;
+                        int placeO2 = $3->place;
+                        char* tipoExpresion1 = strdup($1->tipo);
+                        char* tipoExpresion2 = strdup($3->tipo);
+                        if(strcmp(tipoExpresion1, "entero") == 0 && strcmp(tipoExpresion2, "entero") == 0){
+                                $$->tipo = "entero";
+                                Simbolo* nuevo = newTemp(tabla_simbolos, "entero");
+                                $$->place = nuevo->indice;
+                                gen(tabla_cuadruplas, "resta_enteros",placeO1, placeO2, $$->place);
+                        } else if(strcmp(tipoExpresion1, "entero") == 0 && strcmp(tipoExpresion2, "real") == 0) {
+                                $$->tipo = "real";
+                                Simbolo* nuevo = newTemp(tabla_simbolos, "real");
+                                $$->place = nuevo->indice;
+                                gen(tabla_cuadruplas, "entero_a_real", placeO1, -1, $$->place);
+                                gen(tabla_cuadruplas, "resta_real",$$->place, placeO2, $$->place); 
+                        } else if(strcmp(tipoExpresion1, "real") == 0 && strcmp(tipoExpresion2, "entero") == 0) {
+                                $$->tipo = "real";
+                                Simbolo* nuevo = newTemp(tabla_simbolos, "real");
+                                $$->place = nuevo->indice;
+                                gen(tabla_cuadruplas, "entero_a_real", placeO2, -1, $$->place);
+                                gen(tabla_cuadruplas, "resta_real",placeO1, $$->place, $$->place); 
+                        } else if(strcmp(tipoExpresion1, "real") == 0 && strcmp(tipoExpresion2, "real") == 0) {
+                                $$->tipo = "real";
+                                Simbolo* nuevo = newTemp(tabla_simbolos, "real");
+                                $$->place = nuevo->indice;
+                                gen(tabla_cuadruplas, "resta_real",placeO1, placeO2, $$->place); 
+                        }              
+                }
+    |            expresion tk_multiplicacion expresion {
+                        printf("\tRegla expresion (-> multiplicacion)\n");
+                        int placeO1 = $1->place;
+                        int placeO2 = $3->place;
+                        char* tipoExpresion1 = strdup($1->tipo);
+                        char* tipoExpresion2 = strdup($3->tipo);
+                        if(strcmp(tipoExpresion1, "entero") == 0 && strcmp(tipoExpresion2, "entero") == 0){
+                                $$->tipo = "entero";
+                                Simbolo* nuevo = newTemp(tabla_simbolos, "entero");
+                                $$->place = nuevo->indice;
+                                gen(tabla_cuadruplas, "multiplicacion_enteros",placeO1, placeO2, $$->place);
+                        } else if(strcmp(tipoExpresion1, "entero") == 0 && strcmp(tipoExpresion2, "real") == 0) {
+                                $$->tipo = "real";
+                                Simbolo* nuevo = newTemp(tabla_simbolos, "real");
+                                $$->place = nuevo->indice;
+                                gen(tabla_cuadruplas, "entero_a_real", placeO1, -1, $$->place);
+                                gen(tabla_cuadruplas, "multiplicacion_real",$$->place, placeO2, $$->place); 
+                        } else if(strcmp(tipoExpresion1, "real") == 0 && strcmp(tipoExpresion2, "entero") == 0) {
+                                $$->tipo = "real";
+                                Simbolo* nuevo = newTemp(tabla_simbolos, "real");
+                                $$->place = nuevo->indice;
+                                gen(tabla_cuadruplas, "entero_a_real", placeO2, -1, $$->place);
+                                gen(tabla_cuadruplas, "multiplicacion_real",placeO1, $$->place, $$->place); 
+                        } else if(strcmp(tipoExpresion1, "real") == 0 && strcmp(tipoExpresion2, "real") == 0) {
+                                $$->tipo = "real";
+                                Simbolo* nuevo = newTemp(tabla_simbolos, "real");
+                                $$->place = nuevo->indice;
+                                gen(tabla_cuadruplas, "multiplicacion_real",placeO1, placeO2, $$->place); 
+                        }
+                }
+    |            expresion tk_division expresion {
+                        printf("\tRegla expresion (-> division)\n");
+                        int placeO1 = $1->place;
+                        int placeO2 = $3->place;
+                        char* tipoExpresion1 = strdup($1->tipo);
+                        char* tipoExpresion2 = strdup($3->tipo);
+                        if(strcmp(tipoExpresion1, "entero") == 0 && strcmp(tipoExpresion2, "entero") == 0){
+                                $$->tipo = "real";
+                                Simbolo* aux = newTemp(tabla_simbolos, "real");
+                                gen(tabla_cuadruplas, "entero_a_real", placeO1, -1, aux->indice);
+                                Simbolo* nuevo = newTemp(tabla_simbolos, "real");
+                                $$->place = nuevo->indice;
+                                gen(tabla_cuadruplas, "entero_a_real", placeO2, -1, $$->place);
+                                gen(tabla_cuadruplas, "division_real",aux->indice, $$->place, $$->place);
+                        } else if(strcmp(tipoExpresion1, "entero") == 0 && strcmp(tipoExpresion2, "real") == 0) {
+                                $$->tipo = "real";
+                                Simbolo* nuevo = newTemp(tabla_simbolos, "real");
+                                $$->place = nuevo->indice;
+                                gen(tabla_cuadruplas, "entero_a_real", placeO1, -1, $$->place);
+                                gen(tabla_cuadruplas, "division_real",$$->place, placeO2, $$->place); 
+                        } else if(strcmp(tipoExpresion1, "real") == 0 && strcmp(tipoExpresion2, "entero") == 0) {
+                                $$->tipo = "real";
+                                Simbolo* nuevo = newTemp(tabla_simbolos, "real");
+                                $$->place = nuevo->indice;
+                                gen(tabla_cuadruplas, "entero_a_real", placeO2, -1, $$->place);
+                                gen(tabla_cuadruplas, "division_real",placeO1, $$->place, $$->place); 
+                        } else if(strcmp(tipoExpresion1, "real") == 0 && strcmp(tipoExpresion2, "real") == 0) {
+                                $$->tipo = "real";
+                                Simbolo* nuevo = newTemp(tabla_simbolos, "real");
+                                $$->place = nuevo->indice;
+                                gen(tabla_cuadruplas, "division_real",placeO1, placeO2, $$->place); 
+                        }
+                }
+    |            expresion tk_modulo expresion {
+                        printf("\tRegla expresion (-> modulo)\n");
+                        if(strcmp($1->tipo, "entero") == 0 && strcmp($3->tipo, "entero") == 0){
+                                int placeO1 = $1->place;
+                                int placeO2 = $3->place;
+                                Simbolo* nuevo = newTemp(tabla_simbolos, "entero");
+                                $$->place = nuevo->indice;
+                                $$->tipo = "entero";
+                                gen(tabla_cuadruplas, "modulo", placeO1, placeO2, $$->place);
+                        }
+                }
+    |            expresion tk_div expresion {
+                        printf("\tRegla expresion (-> div)\n");
+                        if(strcmp($1->tipo, "entero") == 0 && strcmp($3->tipo, "entero") == 0){
+                                int placeO1 = $1->place;
+                                int placeO2 = $3->place;
+                                Simbolo* nuevo = newTemp(tabla_simbolos, "entero");
+                                $$->place = nuevo->indice;
+                                $$->tipo = "entero";
+                                gen(tabla_cuadruplas, "division_entera", placeO1, placeO2, $$->place);
+                        }
+                }
+    |            tk_parentesis_apertura expresion tk_parentesis_cierre {
+                        printf("\tRegla expresion (-> parentesis)\n");
+                        $$->place = $2->place;
+                        $$->tipo = $2->tipo; 
+                }
     |            operando {
                         printf("\tRegla expresion (-> operando)\n");
                         $$ = (Expresion*)malloc(sizeof(Expresion));
@@ -293,7 +409,22 @@ instruccion:     tk_continuar { printf("\tRegla instruccion (-> continuar)\n"); 
           |      accion_ll { printf("\tRegla instruccion (-> accion_ll)\n"); }
           ;
                     
-asignacion:      operando tk_asignacion expresion { printf("\tRegla asignacion\n"); }
+asignacion:      operando tk_asignacion expresion {
+                        printf("\tRegla asignacion\n");
+                        char* tipoOperando = strdup(consultarTipo(tabla_simbolos, $1));
+
+                        if(strcmp(tipoOperando, $3->tipo) == 0){
+                                gen(tabla_cuadruplas, "asignacion", $3->place, -1, $1);
+                        } else if (strcmp(tipoOperando, "real") == 0 && strcmp($3->tipo, "entero") == 0){
+                                gen(tabla_cuadruplas, "entero_a_real", $3->place, -1, $3->place);
+                                gen(tabla_cuadruplas, "asignacion", $3->place, -1, $1);
+                        } else  {
+                                // Conflicto de tipos ente operando y expresion
+                                char* mensaje_error = (char*)malloc(50*sizeof(char));
+                                sprintf(mensaje_error, "Conflicto de tipos. %s := %s", tipoOperando, $3->tipo);
+                                yyerror(mensaje_error);
+                        }
+                }
           ;
                     
 alternativa:     tk_si expresion tk_entonces instrucciones lista_opciones tk_fsi { printf("\tRegla alternativa\n"); }
@@ -355,6 +486,6 @@ int main(void)
 }
 void yyerror (char const *s)
 {
-  fprintf (stderr, "%s\n", s);
+        fprintf (stderr, "ERROR[%s]\n", s);
 }
 

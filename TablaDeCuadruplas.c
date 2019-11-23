@@ -36,11 +36,11 @@ void gen(TablaDeCuadruplas* tabla, char* operador, int operando1, int operando2,
 }
 
 void mostrarTablaDeCuadruplas(TablaDeCuadruplas* tabla){
-    printf("/---------------------------------------------------------------\\\n");
-    printf("|                      Tabla de Cuadruplas                      |\n");
-    printf("+--------+------------------+-----------+-----------+-----------+\n");
-    printf("| Indice |     Operador     | Operando1 | Operando2 | Resultado |\n");
-    printf("+--------+------------------+-----------+-----------+-----------+\n");
+    printf("/---------------------------------------------------------------------\\\n");
+    printf("|                         Tabla de Cuadruplas                         |\n");
+    printf("+--------+------------------------+-----------+-----------+-----------+\n");
+    printf("| Indice |        Operador        | Operando1 | Operando2 | Resultado |\n");
+    printf("+--------+------------------------+-----------+-----------+-----------+\n");
     if (tabla->primero == NULL)
     {
         printf("|                      La tabla esta vacia                      |\n");
@@ -48,12 +48,12 @@ void mostrarTablaDeCuadruplas(TablaDeCuadruplas* tabla){
         Cuadrupla* indice = tabla->primero;
         while (indice->siguiente != NULL)
         {
-            printf("|%8d|%18s|%11d|%11d|%11d|\n", indice->indice, indice->operador , indice->operando1, indice->operando2, indice->resultado);
+            printf("|%8d|%24s|%11d|%11d|%11d|\n", indice->indice, indice->operador , indice->operando1, indice->operando2, indice->resultado);
 			indice = indice->siguiente;
         }
-        printf("|%8d|%18s|%11d|%11d|%11d|\n", indice->indice, indice->operador , indice->operando1, indice->operando2, indice->resultado);
+        printf("|%8d|%24s|%11d|%11d|%11d|\n", indice->indice, indice->operador , indice->operando1, indice->operando2, indice->resultado);
         
     }
-    printf("\\---------------------------------------------------------------/\n");
+    printf("\\---------------------------------------------------------------------/\n");
     return;
 }
