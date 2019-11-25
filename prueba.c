@@ -22,6 +22,7 @@ int main(){
 
     printf("-->%d\n",tablaCuadruplas->primero->siguiente->operando1);
     printf("-->%d\n",buscarSimbolo("simb2", TablaDeSimbolos));
-    printf("-->%s\n", consultartipo(TablaDeSimbolos, 2));
+    printf("-->%s\n", consultarTipo(TablaDeSimbolos, 2));
+    printf("-->%d\n", buscarCuadrupla(tablaCuadruplas, 3)->resultado);
     return 0;
 }

@@ -35,6 +35,22 @@ void gen(TablaDeCuadruplas* tabla, char* operador, int operando1, int operando2,
     cuadrupla->indice = tabla->num_cuadruplas;
 }
 
+Cuadrupla* buscarCuadrupla(TablaDeCuadruplas* tabla, int id){
+    Cuadrupla* salida = NULL;
+    if (tabla->primero != NULL)
+    {
+        Cuadrupla* indice = tabla->primero;
+        while (indice->indice != id && indice->siguiente != NULL)
+        {
+            indice = indice->siguiente;
+        }
+        if (indice->indice == id)
+        {
+            salida = indice;
+        }
+    }
+}
+
 void mostrarTablaDeCuadruplas(TablaDeCuadruplas* tabla){
     printf("/---------------------------------------------------------------------\\\n");
     printf("|                         Tabla de Cuadruplas                         |\n");

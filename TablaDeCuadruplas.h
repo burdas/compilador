@@ -25,4 +25,5 @@
     TablaDeCuadruplas* nuevaTablaDeCuadruplas();
     void gen(TablaDeCuadruplas* tabla, char* operador, int operando1, int operando2, int resultado);
     void mostrarTablaDeCuadruplas(TablaDeCuadruplas* tabla);
+    Cuadrupla* buscarCuadrupla(TablaDeCuadruplas* tabla, int id);
 #endif
