@@ -251,6 +251,10 @@ expresion:       funcion_ll { printf("\tRegla expresion (-> funcion_ll)\n"); }
                                 Simbolo* nuevo = newTemp(tabla_simbolos, "real");
                                 $$->place = nuevo->indice;
                                 gen(tabla_cuadruplas, "suma_real",placeO1, placeO2, $$->place); 
+                        } else {
+                                char* mensaje_error = (char*)malloc(50*sizeof(char));
+                                sprintf(mensaje_error, "Conflicto de tipos. %s + %s", $1->tipo, $3->tipo);
+                                yyerror(mensaje_error);  
                         }
                 }
     |            expresion tk_resta expresion {
@@ -281,6 +285,10 @@ expresion:       funcion_ll { printf("\tRegla expresion (-> funcion_ll)\n"); }
                                 Simbolo* nuevo = newTemp(tabla_simbolos, "real");
                                 $$->place = nuevo->indice;
                                 gen(tabla_cuadruplas, "resta_real",placeO1, placeO2, $$->place); 
+                        } else {
+                                char* mensaje_error = (char*)malloc(50*sizeof(char));
+                                sprintf(mensaje_error, "Conflicto de tipos. %s - %s", $1->tipo, $3->tipo);
+                                yyerror(mensaje_error);  
                         }              
                 }
     |            expresion tk_multiplicacion expresion {
@@ -311,6 +319,10 @@ expresion:       funcion_ll { printf("\tRegla expresion (-> funcion_ll)\n"); }
                                 Simbolo* nuevo = newTemp(tabla_simbolos, "real");
                                 $$->place = nuevo->indice;
                                 gen(tabla_cuadruplas, "multiplicacion_real",placeO1, placeO2, $$->place); 
+                        } else {
+                                char* mensaje_error = (char*)malloc(50*sizeof(char));
+                                sprintf(mensaje_error, "Conflicto de tipos. %s * %s", $1->tipo, $3->tipo);
+                                yyerror(mensaje_error);  
                         }
                 }
     |            expresion tk_division expresion {
@@ -344,6 +356,10 @@ expresion:       funcion_ll { printf("\tRegla expresion (-> funcion_ll)\n"); }
                                 Simbolo* nuevo = newTemp(tabla_simbolos, "real");
                                 $$->place = nuevo->indice;
                                 gen(tabla_cuadruplas, "division_real",placeO1, placeO2, $$->place); 
+                        } else {
+                                char* mensaje_error = (char*)malloc(50*sizeof(char));
+                                sprintf(mensaje_error, "Conflicto de tipos. %s / %s", $1->tipo, $3->tipo);
+                                yyerror(mensaje_error);  
                         }
                 }
     |            expresion tk_modulo expresion {
@@ -355,6 +371,10 @@ expresion:       funcion_ll { printf("\tRegla expresion (-> funcion_ll)\n"); }
                                 $$->place = nuevo->indice;
                                 $$->tipo = "entero";
                                 gen(tabla_cuadruplas, "modulo", placeO1, placeO2, $$->place);
+                        } else {
+                                char* mensaje_error = (char*)malloc(50*sizeof(char));
+                                sprintf(mensaje_error, "Conflicto de tipos. %s mod %s", $1->tipo, $3->tipo);
+                                yyerror(mensaje_error);  
                         }
                 }
     |            expresion tk_div expresion {
@@ -366,6 +386,10 @@ expresion:       funcion_ll { printf("\tRegla expresion (-> funcion_ll)\n"); }
                                 $$->place = nuevo->indice;
                                 $$->tipo = "entero";
                                 gen(tabla_cuadruplas, "division_entera", placeO1, placeO2, $$->place);
+                        } else {
+                                char* mensaje_error = (char*)malloc(50*sizeof(char));
+                                sprintf(mensaje_error, "Conflicto de tipos. %s mod %s", $1->tipo, $3->tipo);
+                                yyerror(mensaje_error);  
                         }
                 }
     |            tk_parentesis_apertura expresion tk_parentesis_cierre {
@@ -380,7 +404,17 @@ expresion:       funcion_ll { printf("\tRegla expresion (-> funcion_ll)\n"); }
 		        $$->tipo = consultarTipo(tabla_simbolos, $1);
                 }
     |            tk_literal_numerico { printf("\tRegla expresion (-> literal numerico)\n"); }
-    |            tk_resta expresion %prec tk_menos_unario { printf("\tRegla expresion (-> menos unario)\n"); }
+    |            tk_resta expresion %prec tk_menos_unario {
+                        printf("\tRegla expresion (-> menos unario)\n");
+                        Simbolo* nuevo = newTemp(tabla_simbolos, $2->tipo);
+                        if(strcmp($2->tipo, "entero") == 0){
+                                gen(tabla_cuadruplas, "menos_unario_entero", $2->place, -1, nuevo->indice);
+                        } else if(strcmp($2->tipo, "real") == 0){
+                                gen(tabla_cuadruplas, "menos_unario_real", $2->place, -1, nuevo->indice);
+                        }
+                        $$->tipo = $2->tipo;
+                        $$->place = $2->place;
+                }
     |            expresion tk_AND expresion { printf("\tRegla expresion (-> and)\n"); }
     |            expresion tk_OR expresion { printf("\tRegla expresion (-> or)\n"); }
     |            tk_NOT expresion { printf("\tRegla expresion (-> not)\n"); }

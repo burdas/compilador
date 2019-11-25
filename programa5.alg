@@ -1,7 +1,7 @@
-algoritmo sumacomb;
-    ent n: entero; m: real;
+algoritmo prueba;
+    ent n: entero; m: booleano;
     sal salida: real;
 {Prec: precondicion}
-    salida := (n*(n * n)) / n
+    salida := -n
 {Post: postcondicion}
 falgoritmo
