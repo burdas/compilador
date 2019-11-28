@@ -18,7 +18,17 @@
           int place;
           char* code;
           char* tipo;
+          int* trueE;
+          int* falseE;
+          int* next;
   }Expresion;
+
+  int* makelist(int idCuadrupla);
+  int* merge(int* list1, int* list2);
+  void backpatch(int* list, int idCuadrupla);
+
+  // Funcion usada para debug
+  void viewList(int* list);
 %}
 %union{
         int uEntero;
@@ -59,7 +69,7 @@
 
 %left tk_suma tk_resta tk_AND tk_OR
 %left tk_multiplicacion tk_division tk_modulo tk_div
-%left tk_operador_relacional
+%left<uString> tk_operador_relacional
 %left tk_NOT
 %right tk_menos_unario
 
@@ -91,6 +101,9 @@
 %type<uListaStrings>lista_id
 %type<uExpresion>expresion
 %type<uEntero>operando
+%type<uEntero>M
+%type<uExpresion>N
+%type<uEntero>lista_opciones
 
 
 %%
@@ -395,13 +408,23 @@ expresion:       funcion_ll { printf("\tRegla expresion (-> funcion_ll)\n"); }
     |            tk_parentesis_apertura expresion tk_parentesis_cierre {
                         printf("\tRegla expresion (-> parentesis)\n");
                         $$->place = $2->place;
-                        $$->tipo = $2->tipo; 
+                        $$->tipo = $2->tipo;
+                        if(strcmp($2->tipo, "booleano") == 0){
+                                $$->trueE = $2->trueE;
+                                $$->falseE = $2->falseE;
+                        } 
                 }
     |            operando {
                         printf("\tRegla expresion (-> operando)\n");
                         $$ = (Expresion*)malloc(sizeof(Expresion));
                         $$->place = $1;
 		        $$->tipo = consultarTipo(tabla_simbolos, $1);
+                        if(strcmp($$->tipo, "booleano") == 0){
+                                $$->trueE =  makelist(tabla_cuadruplas->num_cuadruplas + 1);
+                                $$->falseE =  makelist(tabla_cuadruplas->num_cuadruplas + 2);
+                                gen(tabla_cuadruplas, "ifGoto", $$->place, -1, -1);
+                                gen(tabla_cuadruplas, "Goto", -1, -1, -1);
+                        }
                 }
     |            tk_literal_numerico { printf("\tRegla expresion (-> literal numerico)\n"); }
     |            tk_resta expresion %prec tk_menos_unario {
@@ -415,14 +438,52 @@ expresion:       funcion_ll { printf("\tRegla expresion (-> funcion_ll)\n"); }
                         $$->tipo = $2->tipo;
                         $$->place = $2->place;
                 }
-    |            expresion tk_AND expresion { printf("\tRegla expresion (-> and)\n"); }
-    |            expresion tk_OR expresion { printf("\tRegla expresion (-> or)\n"); }
-    |            tk_NOT expresion { printf("\tRegla expresion (-> not)\n"); }
+    |            expresion tk_AND M expresion {
+                        printf("\tRegla expresion (-> and)\n");
+                        backpatch($1->trueE, $3);
+                        $$->falseE = merge($1->falseE, $4->falseE);
+                        $$->trueE = $4->trueE;
+                        $$->tipo = "booleano";
+                }
+    |            expresion tk_OR M expresion {
+                        printf("\tRegla expresion (-> or)\n");
+                        backpatch($1->falseE, $3);
+                        $$->trueE = merge($1->trueE, $4->trueE);
+                        $$->falseE = $4->falseE;
+                        $$->tipo = "booleano";
+                }
+    |            tk_NOT expresion {
+                        printf("\tRegla expresion (-> not)\n");
+                        $$->trueE = $2->falseE;
+                        $$->falseE = $2->trueE;
+                        $$->tipo = "booleano";
+                }
     |            tk_verdadero { printf("\tRegla expresion (-> verdadero)\n"); }
     |            tk_falso { printf("\tRegla expresion (-> falso)\n"); }
-    |            expresion tk_operador_relacional expresion { printf("\tRegla expresion (-> operador relacional)\n"); }
+    |            expresion tk_operador_relacional expresion {
+                        printf("\tRegla expresion (-> operador relacional)\n");
+                        $$->tipo = "booleano";
+                        $$->trueE = makelist(tabla_cuadruplas->num_cuadruplas + 1);
+                        $$->falseE = makelist(tabla_cuadruplas->num_cuadruplas + 2);
+                        char* operador = (char*)malloc(50*sizeof(char));
+                        snprintf(operador, 50, "if_%s_Goto", $2);
+                        gen(tabla_cuadruplas, operador, $1->place, $3->place, -1);
+                        gen(tabla_cuadruplas, "Goto", -1, -1, -1);
+                }
     ;
-                    
+
+M:      %empty {
+                // Este sería nextquad
+                $$ = tabla_cuadruplas->num_cuadruplas + 1;
+        }
+        ;
+
+N:      %empty {
+                $$->next = makelist(tabla_cuadruplas->num_cuadruplas + 1);
+	        gen(tabla_cuadruplas ,"Goto", -1, -1, -1);
+        }
+        ; 
+
 operando:        tk_identificador {
                         printf("\tRegla operando (-> identificador)\n");
                         $$ = buscarSimbolo($1, tabla_simbolos);
@@ -461,11 +522,23 @@ asignacion:      operando tk_asignacion expresion {
                 }
           ;
                     
-alternativa:     tk_si expresion tk_entonces instrucciones lista_opciones tk_fsi { printf("\tRegla alternativa\n"); }
+alternativa:     tk_si expresion tk_entonces M instrucciones N lista_opciones tk_fsi {
+                        printf("\tRegla alternativa\n");
+                        /*printf("\t\t\t-->%d\n", $4);
+                        viewList($2->trueE);
+                        viewList($2->falseE);*/
+                        backpatch($2->trueE, $4);
+                        backpatch($2->falseE, $7);
+                }
           ;
                     
-lista_opciones:  tk_sino expresion tk_entonces instrucciones lista_opciones { printf("\tRegla lista_opciones (-> sino)\n"); }
-             |   %empty { printf("\tRegla alternativa (-> epsilon)\n"); }
+lista_opciones:  tk_sino M expresion tk_entonces M instrucciones N lista_opciones {
+                        printf("\tRegla lista_opciones (-> sino)\n");
+                        $$ = $2;
+                        backpatch($3->trueE, $5);
+                        backpatch($3->falseE, $8);
+                }
+             |   %empty { printf("\tRegla lista_opciones (-> epsilon)\n"); }
              ;
                     
 iteracion:       it_cota_fija { printf("\tRegla iteracion (-> cota fija)\n"); }
@@ -510,6 +583,57 @@ l_ll:            expresion tk_coma l_ll { printf("\tRegla l_ll (-> coma)\n"); }
     ;
 
 %%
+int* makelist(int idCuadrupla){
+        int* nueva = (int*) malloc (sizeof(int));
+        nueva[0] = idCuadrupla;
+        return nueva;
+}
+
+int* merge(int* list1, int* list2){
+        int length1 = 0;
+        int length2 = 0;
+        // Como no existe la cuadrupla 0 y si apunta a una posicion inexistente, devuelve cero
+        // recorremos de esta manera
+        while (list1[length1] != 0){
+                length1++;
+        }
+        while (list2[length2] != 0){
+                length2++;
+        }
+        int* salida = (int*) malloc ((length1 + length2) * sizeof(int));
+        int contador = 0;
+        for(int i = 0; i < length1; i++){
+                salida[contador] = list1[i];
+                contador++;
+        } 
+        for(int i = 0; i < length2; i++){
+                salida[contador] = list2[i];
+                contador++;
+        }
+        return salida;
+}
+
+void backpatch(int* list, int idCuadrupla){
+        int i = 0;
+        while(list[i] != 0){
+                Cuadrupla* aux = buscarCuadrupla(tabla_cuadruplas, list[i]);
+                if(aux != NULL){
+                        aux->resultado = idCuadrupla;
+                }
+                i++;
+        }
+}
+
+void viewList(int* list){
+        printf("\t\t-->Lista:");
+        int i = 0;
+        while(list[i] != 0){
+                printf(" %d", list[i]);
+                i++;
+        }
+        printf("\n");
+}
+
 int main(void)
 {
         tabla_simbolos = nuevaTablaDeSimbolos();
@@ -518,6 +642,7 @@ int main(void)
         mostrarTablaDeSimbolos(tabla_simbolos);
         mostrarTablaDeCuadruplas(tabla_cuadruplas);
 }
+
 void yyerror (char const *s)
 {
         fprintf (stderr, "ERROR[%s]\n", s);

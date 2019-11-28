@@ -1,8 +1,9 @@
 #include "TablaDeCuadruplas.h"
 #include "TablaDeSimbolos.h"
+#include <string.h>
 
 int main(){
-
+    /*
     TablaDeCuadruplas* tablaCuadruplas = nuevaTablaDeCuadruplas();
     TablaDeSimbolos* TablaDeSimbolos = nuevaTablaDeSimbolos();
 
@@ -24,5 +25,10 @@ int main(){
     printf("-->%d\n",buscarSimbolo("simb2", TablaDeSimbolos));
     printf("-->%s\n", consultarTipo(TablaDeSimbolos, 2));
     printf("-->%d\n", buscarCuadrupla(tablaCuadruplas, 3)->resultado);
+    */
+
+    int* a = (int*) malloc (sizeof(int));
+    *a = 55;
+    printf("Valor: %d", a[0]);
     return 0;
 }

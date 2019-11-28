@@ -176,6 +176,7 @@ CFTIPO                  ?i:(ftipo)
 
 {OPERADOR_RELACIONAL} {
             printf("Operador relacional: %s\n", yytext);
+			yylval.uString = strdup(yytext);
 			return tk_operador_relacional;
 }
 
