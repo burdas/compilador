@@ -35,6 +35,7 @@
 	char* uString;
         struct ListaStrings* uListaStrings;
         struct Expresion* uExpresion;
+        int* uListaEnteros;
 }
 
 %token tk_algoritmo
@@ -104,6 +105,12 @@
 %type<uEntero>M
 %type<uExpresion>N
 %type<uEntero>lista_opciones
+%type<uListaEnteros>instruccion
+%type<uListaEnteros>instrucciones
+%type<uExpresion>it_cota_exp
+%type<uExpresion>asignacion
+%type<uExpresion>alternativa
+%type<uExpresion>iteracion
 
 
 %%
@@ -493,14 +500,32 @@ operando:        tk_identificador {
         |        operando tk_ref { printf("\tRegla operando (-> ref)\n"); }
         ;
                     
-instrucciones:   instruccion tk_punto_coma instrucciones { printf("\tRegla instrucciones (-> punto y coma)\n"); }
-            |    instruccion { printf("\tRegla instrucciones (-> instruccion)\n"); }
+instrucciones:   instruccion tk_punto_coma M instrucciones {
+                        printf("\tRegla instrucciones (-> punto y coma)\n");
+                        if($1[0] != 0){
+                                backpatch($1, $3);
+                        }
+                        $$ = merge($1, $4);
+                }
+            |    instruccion {
+                        printf("\tRegla instrucciones (-> instruccion)\n");
+                        $$ = (int*)malloc(sizeof(int));
+                }
             ;
                     
 instruccion:     tk_continuar { printf("\tRegla instruccion (-> continuar)\n"); }
-          |      asignacion { printf("\tRegla instruccion (-> asignacion)\n"); }
-          |      alternativa { printf("\tRegla instruccion (-> alternativa)\n"); }
-          |      iteracion { printf("\tRegla instruccion (-> iteracion)\n"); }
+          |      asignacion { 
+                        printf("\tRegla instruccion (-> asignacion)\n");
+                        $$ = makelist(tabla_cuadruplas->num_cuadruplas);
+                  }
+          |      alternativa {
+                        printf("\tRegla instruccion (-> alternativa)\n");
+                        $$ = $1->next;
+                }
+          |      iteracion {
+                        printf("\tRegla instruccion (-> iteracion)\n");
+                        $$ = $1->next;
+                }
           |      accion_ll { printf("\tRegla instruccion (-> accion_ll)\n"); }
           ;
                     
@@ -524,9 +549,6 @@ asignacion:      operando tk_asignacion expresion {
                     
 alternativa:     tk_si expresion tk_entonces M instrucciones N lista_opciones tk_fsi {
                         printf("\tRegla alternativa\n");
-                        /*printf("\t\t\t-->%d\n", $4);
-                        viewList($2->trueE);
-                        viewList($2->falseE);*/
                         backpatch($2->trueE, $4);
                         backpatch($2->falseE, $7);
                 }
@@ -538,14 +560,26 @@ lista_opciones:  tk_sino M expresion tk_entonces M instrucciones N lista_opcione
                         backpatch($3->trueE, $5);
                         backpatch($3->falseE, $8);
                 }
-             |   %empty { printf("\tRegla lista_opciones (-> epsilon)\n"); }
+             |   %empty {
+                        printf("\tRegla lista_opciones (-> epsilon)\n");
+                        $$ = tabla_cuadruplas->num_cuadruplas + 1;   
+                }
              ;
                     
 iteracion:       it_cota_fija { printf("\tRegla iteracion (-> cota fija)\n"); }
          |       it_cota_exp  { printf("\tRegla iteracion (-> cota expresion)\n"); }
          ;
                     
-it_cota_exp:     tk_mientras expresion tk_hacer instrucciones tk_fmientras { printf("\tRegla it_cota_exp\n"); }
+it_cota_exp:     tk_mientras M expresion tk_hacer M instrucciones tk_fmientras {
+                        printf("\tRegla it_cota_exp\n");
+                        backpatch($3->trueE, $5);
+                        if($6[0] != 0){
+                                backpatch($6, $2);
+                        } else {
+                                gen(tabla_cuadruplas, "Goto", -1, -1, $2);
+                        }
+                        $$->next = $3->falseE;
+                }
            ;
                     
 it_cota_fija:    tk_para tk_identificador tk_asignacion expresion tk_hasta expresion tk_hacer instrucciones tk_fpara { printf("\tRegla it_cota_fija\n"); }

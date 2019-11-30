@@ -1,4 +1,4 @@
-/* A Bison parser, made by GNU Bison 3.4.2.  */
+/* A Bison parser, made by GNU Bison 3.4.1.  */
 
 /* Bison interface for Yacc-like parsers in C
 
@@ -125,8 +125,9 @@ union YYSTYPE
 	char* uString;
         struct ListaStrings* uListaStrings;
         struct Expresion* uExpresion;
+        int* uListaEnteros;
 
-#line 130 "gramatica.tab.h"
+#line 131 "gramatica.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
