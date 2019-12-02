@@ -27,7 +27,7 @@ LITERAL_CADENA          '(\\.|[^'\\])*'|\/'.*
 COMENTARIO              \{[^}]*\}
 
 /* Operadores*/
-OPERADOR_RELACIONAL             ">"|"<"|"="|"<="|">="|"!="
+OPERADOR_RELACIONAL             (">"|"<"|"="|"<="|">="|"<>")
 OPERADOR_SUMA                   "+"
 OPERADOR_RESTA                  "-"
 OPERADOR_MULTIPLICACION         "*"
@@ -46,8 +46,8 @@ SUBRANGO                ".."
 DEFINICION_TIPO         ":"
 INICIO_ARRAY            "["
 FIN_ARRAY               "]"
-PARENTESIS_APERTURA     "("
-PARENTESIS_CIERRE       ")"
+PARENTESIS_APERTURA     \(
+PARENTESIS_CIERRE       \)
 DE                      ?i:(de)
 
 PREC                    \{Prec[^}]*\}

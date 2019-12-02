@@ -111,6 +111,7 @@
 %type<uExpresion>asignacion
 %type<uExpresion>alternativa
 %type<uExpresion>iteracion
+%type<uListaStrings>lista_d_var
 
 
 %%
@@ -197,13 +198,13 @@ lista_d_var:     lista_id tk_dospuntos d_tipo tk_punto_coma lista_d_var {
                         ListaStrings* listaIdentidicadores = $1;
                         while(listaIdentidicadores->siguiente != NULL){
                                 if(buscarSimbolo(listaIdentidicadores->string, tabla_simbolos) == -1){
-                                        Simbolo* simb = nuevoSimbolo(strdup(listaIdentidicadores->string), strdup($3));
+                                        Simbolo* simb = nuevoSimbolo(strdup(listaIdentidicadores->string), strdup($3), 0);
                                         insertarSimbolo(tabla_simbolos, simb);
                                 }
                                 listaIdentidicadores = listaIdentidicadores->siguiente;
                         }
                         if(buscarSimbolo(listaIdentidicadores->string, tabla_simbolos) == -1){
-                                Simbolo* simb = nuevoSimbolo(strdup(listaIdentidicadores->string), strdup($3));
+                                Simbolo* simb = nuevoSimbolo(strdup(listaIdentidicadores->string), strdup($3), 0);
                                 insertarSimbolo(tabla_simbolos, simb);
                         }                
                 }
@@ -236,10 +237,31 @@ decl_ent_sal:    decl_ent { printf("\tRegla decl_ent_sal ( -> ent )\n"); }
             |    decl_sal { printf("\tRegla decl_ent_sal ( -> sal )\n"); }
             ;
                     
-decl_ent:        tk_ent lista_d_var { printf("\tRegla decl_ent\n"); }
+decl_ent:        tk_ent lista_d_var {
+                        printf("\tRegla decl_ent\n");
+                        ListaStrings* i = $2;
+                        do{
+                                printf("\t\t--->Introducido: %s\n", i->string);
+                                int idSimbolo = buscarSimbolo(i->string, tabla_simbolos);
+                                if(idSimbolo > -1){
+                                        cambiarEntradaSalida(tabla_simbolos, i->string, 1);
+                                        gen(tabla_cuadruplas, "Input", idSimbolo, -1, -1);
+                                }
+                                i = i->siguiente;
+                        } while (i != NULL);
+                }
         ;
                     
-decl_sal:        tk_sal lista_d_var { printf("\tRegla decl_sal\n"); }
+decl_sal:        tk_sal lista_d_var {
+                        printf("\tRegla decl_sal\n");
+                        ListaStrings* i = $2;
+                        do{
+                                if(buscarSimbolo(i->string, tabla_simbolos) > -1){
+                                        cambiarEntradaSalida(tabla_simbolos, i->string, 2);
+                                }
+                                i = i->siguiente;
+                        } while (i != NULL);
+                }
         ;
                     
 expresion:       funcion_ll { printf("\tRegla expresion (-> funcion_ll)\n"); }
@@ -469,12 +491,14 @@ expresion:       funcion_ll { printf("\tRegla expresion (-> funcion_ll)\n"); }
     |            tk_falso { printf("\tRegla expresion (-> falso)\n"); }
     |            expresion tk_operador_relacional expresion {
                         printf("\tRegla expresion (-> operador relacional)\n");
+                        char* operadorRelacional = strdup($2);
                         $$->tipo = "booleano";
                         $$->trueE = makelist(tabla_cuadruplas->num_cuadruplas + 1);
                         $$->falseE = makelist(tabla_cuadruplas->num_cuadruplas + 2);
-                        char* operador = (char*)malloc(50*sizeof(char));
-                        snprintf(operador, 50, "if_%s_Goto", $2);
-                        gen(tabla_cuadruplas, operador, $1->place, $3->place, -1);
+                        char* operadorSalida = (char*)malloc(50*sizeof(char));
+                        printf("\t\t---> %s \n", operadorRelacional);
+                        snprintf(operadorSalida, 50, "if_%s_Goto", operadorRelacional);
+                        gen(tabla_cuadruplas, operadorSalida, $1->place, $3->place, -1);
                         gen(tabla_cuadruplas, "Goto", -1, -1, -1);
                 }
     ;
@@ -493,7 +517,7 @@ N:      %empty {
 
 operando:        tk_identificador {
                         printf("\tRegla operando (-> identificador)\n");
-                        $$ = buscarSimbolo($1, tabla_simbolos);
+                        $$ = buscarSimbolo(strdup($1), tabla_simbolos);
                 }
         |        operando tk_punto operando { printf("\tRegla operando (-> punto)\n"); }
         |        operando tk_corchete_abierto expresion tk_corchete_cerrado { printf("\tRegla operando (-> corchetes)\n"); }
@@ -673,6 +697,16 @@ int main(void)
         tabla_simbolos = nuevaTablaDeSimbolos();
         tabla_cuadruplas = nuevaTablaDeCuadruplas();
         yyparse();
+
+        int* listaOutputs = obtenerOutput(tabla_simbolos);
+        int iOutput = 0;
+        if(listaOutputs[iOutput] != 0){
+                do{
+                        gen(tabla_cuadruplas, "Output", listaOutputs[iOutput], -1, -1);
+                        iOutput++;
+                } while (listaOutputs[iOutput] != 0);
+        }
+
         mostrarTablaDeSimbolos(tabla_simbolos);
         mostrarTablaDeCuadruplas(tabla_cuadruplas);
 }

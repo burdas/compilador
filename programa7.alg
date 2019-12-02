@@ -6,7 +6,7 @@ algoritmo prueba;
         i: entero;
     fvar;
     {i := 0;}
-    mientras i < n hacer
+    mientras salida <> ( n ) hacer
         salida := salida + n
         {i := i + 1}
     fmientras
