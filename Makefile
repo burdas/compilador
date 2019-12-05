@@ -24,8 +24,8 @@ compilar_TablaDeCuadruplas: TablaDeCuadruplas.c
 	gcc -c TablaDeCuadruplas.c
 	@echo "-> Compilando TablaDeCuadruplas.c correctamente"
 	
-clean: lex.yy.c a.out lex.yy.o gramatica.tab.c gramatica.output TablaDeSimbolos.o TablaDeCuadruplas.o
-	rm lex.yy.c a.out gramatica.tab.c lex.yy.o gramatica.output TablaDeSimbolos.o TablaDeCuadruplas.o
+clean: lex.yy.c a.out lex.yy.o gramatica.tab.c gramatica.output TablaDeSimbolos.o TablaDeCuadruplas.o gramatica.tab.h
+	rm lex.yy.c a.out gramatica.tab.c lex.yy.o gramatica.output TablaDeSimbolos.o TablaDeCuadruplas.o gramatica.tab.h
 	@echo "-> Se han eliminado los archivos correctamente"
 
 %: default programa%.alg

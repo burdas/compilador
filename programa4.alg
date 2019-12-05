@@ -6,9 +6,9 @@ algoritmo buscaNumero;
     var
         i: entero;
     fvar;
-    i:= 0;
+    {i:= 0;}
     mientras array[i] != n hacer
-        i := i+1
+        {i := i+1}
     fmientras;
     posicion := i
 {Post: n = N AND posicion = i}

@@ -94,8 +94,9 @@ char *consultarTipo(TablaDeSimbolos *tabla, int indiceBuscar)
 void cambiarEntradaSalida(TablaDeSimbolos *tabla, char *identificador_introducido, short entrada_salida_cambiar)
 {
     Simbolo* i = tabla->primero;
-    if (i->siguiente != NULL)
+    if (i != NULL)
     {
+        printf("[[!!!!!!!!!Entra¡¡¡¡¡¡¡¡¡¡¡]]%d\n", entrada_salida_cambiar);
         do
         {
             if (strcmp(i->identificador, identificador_introducido) == 0)
