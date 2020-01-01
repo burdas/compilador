@@ -246,9 +246,7 @@ decl_ent:        tk_ent lista_d_var {
                         printf("\tRegla decl_ent\n");
                         ListaStrings* i = $2;
                         do{
-                                printf("\t\t--->Introducido: %s", i->string);
                                 int idSimbolo = buscarSimbolo(i->string, tabla_simbolos);
-                                printf("\t\t--->SimboloId: %d\n", idSimbolo);
                                 if(idSimbolo > -1){
                                         cambiarEntradaSalida(tabla_simbolos, i->string, 1);
                                         gen(tabla_cuadruplas, "Input", idSimbolo, -1, -1);
@@ -502,7 +500,7 @@ expresion:       funcion_ll { printf("\tRegla expresion (-> funcion_ll)\n"); }
                         $$->trueE = makelist(tabla_cuadruplas->num_cuadruplas + 1);
                         $$->falseE = makelist(tabla_cuadruplas->num_cuadruplas + 2);
                         char* operadorSalida = (char*)malloc(50*sizeof(char));
-                        printf("\t\t---> %d \n", strlen(operadorRelacional));
+                        printf("\t\t---> %d \n", (int) strlen(operadorRelacional));
                         snprintf(operadorSalida, 50, "if_%s_Goto", operadorRelacional);
                         gen(tabla_cuadruplas, operadorSalida, $1->place, $3->place, -1);
                         gen(tabla_cuadruplas, "Goto", -1, -1, -1);
@@ -533,7 +531,7 @@ operando:        tk_identificador {
 instrucciones:   instruccion tk_punto_coma M instrucciones {
                         printf("\tRegla instrucciones (-> punto y coma)\n");
                         if($1[0] != 0){
-                                backpatch($1, $3);
+                                //backpatch($1, $3);
                         }
                         $$ = merge($1, $4);
                 }
@@ -546,7 +544,7 @@ instrucciones:   instruccion tk_punto_coma M instrucciones {
 instruccion:     tk_continuar { printf("\tRegla instruccion (-> continuar)\n"); }
           |      asignacion { 
                         printf("\tRegla instruccion (-> asignacion)\n");
-                        $$ = makelist(tabla_cuadruplas->num_cuadruplas + 1);
+                        $$ = makelist(tabla_cuadruplas->num_cuadruplas);
                   }
           |      alternativa {
                         printf("\tRegla instruccion (-> alternativa)\n");
@@ -657,8 +655,8 @@ int* makelist(int idCuadrupla){
 int* merge(int* list1, int* list2){
         int length1 = 0;
         int length2 = 0;
-        // Como no existe la cuadrupla 0 y si apunta a una posicion inexistente, devuelve cero
-        // recorremos de esta manera
+        // Como no existe la cuadrupla 0 y si apunta a una posicion inexistente, devuelve cero,
+        // podemos usar lo siguiente para recorrer la lista
         while (list1[length1] != 0){
                 length1++;
         }
@@ -705,6 +703,7 @@ int main(void)
         tabla_cuadruplas = nuevaTablaDeCuadruplas();
         yyparse();
 
+        // Añadidmos los outputs a la tabla de cuadruplas
         int* listaOutputs = obtenerOutput(tabla_simbolos);
         int iOutput = 0;
         if(listaOutputs[iOutput] != 0){

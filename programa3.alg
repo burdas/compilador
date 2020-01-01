@@ -9,7 +9,7 @@ algoritmo sumacomb;
     {suma:= 0;}
     comb:= m;
     mientras i < n hacer
-        suma := suma + comb;
+        suma := suma + comb
         {comb := comb * (m - i - 1) div (i + 2);}
         {i := i+1}
     fmientras

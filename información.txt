@@ -1,20 +1,57 @@
 Somos el grupo formado por Marcos Burdaspar e Iñigo García.
 
-- Compilación
-Hemos creado un Makefile para facilitar la compilación y
-ejecución con los ejemplos.
+1 - ¿Qué habéis conseguido que haga vuestro compilador?
 
-Al hacer make sin nada mas, se generara el fichero lex.yy.c
-posteriormente se compilara y obtendremos el ejecutable a.out
+El compilador reconoce la grámatica según se espera. Una vez
+lo hace, genera la tabla de simbolos con las variables de entrada
+salida, las variables contenidas entre "var" y "fvar" y también
+genera variables temporales mediante el uso de la función newTemp.
 
-Si hacemos make X, siendo X el número del programa a probar,
-se ejecutara la compilación del paso anterior y después se 
-ejecutara ./a.out y el programa elegido.
+También es capaz de trabajar con expresiones aritméticas
+y booleanas, llegando hasta los Ifs y Mientras. Las expresiones
+aritméticas las genera correctamente, mientras que las expresiones
+booleanas seguramente presenten fallos. Con los ejemplos que hemos
+estado probando, nos a dado resultados favorables.
 
-Finalmente si hacemos make clean, borrara los archivos a.out
-y lex.yy.c
+2 - Características específicas de vuestro lexico y vuestra gramática
 
-- Ejemplos
-Además de los ejemplos proporcionados en el guión de la práctica
-hemos añadido uno más en el que se puede ver el uso de comentarios
-ademas del uso de tablas y su consiguiente acceso ([0..N])
+Nuesto lexico es el mismo que en el de los ejemplos proporcionados,
+el nombre de las instrucciones son las mismas. Quizás presente alguna
+salvedad como el simbolo de distinto, que en nuestro caso es "<>" o
+alguna expresión asi por el estilo.
+
+Respecto a la grámatica prácticamente no hemos alterado la proporcionada.
+Nos casamos con el modelo de C con lo que eso nos ha llevado a cambiar
+el tema de las producciones de expresión. También para el tema de generar
+código, hemos tenido que añadir dos producciones M y N, como en los ejemplos
+se mostraba.
+
+3 - ¿Qué pasos hay que dar para comprobar vuestro trabajo?
+
+Para facilitar todo el tema de generar el compilador hemos usado un
+Makefile.
+
+Este tiene una serie de reglas intermedias para generar paso a paso
+cada componente de proyecto, como flex, bison, la tabla de simbolos y
+la tabla de cuadruplas. Para el uso normal se usan los siguientes comandos:
+
+    make - Haciendo make sin nada más, ejecuta todos los pasos intermedios
+    para compilar el proyecto y generar el ejecutable a.out
+
+    make x - Siendo x el número del programa a ejecutar. Ejemplo "make 1".
+    En el ejemplo anterior compilaria igual que la instrucción anterior y 
+    además ejecutaría el compilador teniendo como entrada "programa1.alg"
+
+    make clean - Borra el ejecutable y todos los ficheros que se generan en
+    los pasos intermedios
+
+Una vez se compila y se ejecuta correctamente, el compilador va a generar
+dos tablas que mostrara por pantalla. Una es la tabla de simbolos que mostrará
+las variables que estén en el programa y también estarán las variables que genere
+el compilador. En la otra tabla se encuentran las cuadruplas que va a generar
+el compilador con el código en tres direcciones.
+
+4 - ¿Qué porcentaje de trabajo es imputable a cada uno de los componentes del grupo?
+
+Marcos Burdaspar - 60%
+Iñigo García     - 40%

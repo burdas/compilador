@@ -96,7 +96,6 @@ void cambiarEntradaSalida(TablaDeSimbolos *tabla, char *identificador_introducid
     Simbolo* i = tabla->primero;
     if (i != NULL)
     {
-        printf("[[!!!!!!!!!Entra¡¡¡¡¡¡¡¡¡¡¡]]%d\n", entrada_salida_cambiar);
         do
         {
             if (strcmp(i->identificador, identificador_introducido) == 0)
@@ -146,9 +145,9 @@ void mostrarTablaDeSimbolos(TablaDeSimbolos *tabla)
 {
     printf("/------------------------------------------------------------\\\n");
     printf("|                   Tabla de Simbolos                        |\n");
-    printf("+--------+------------------------+--------------------+-----|\n");
+    printf("+--------+------------------------+--------------------+-----+\n");
     printf("| indice |     Identificador      |       Tipo         | E/S |\n");
-    printf("+--------+------------------------+--------------------+-----|\n");
+    printf("+--------+------------------------+--------------------+-----+\n");
     if (tabla->primero == NULL)
     {
         printf("|                 La tabla esta vacia                  |\n");
@@ -163,6 +162,11 @@ void mostrarTablaDeSimbolos(TablaDeSimbolos *tabla)
         }
         printf("|%8d|%24s|%20s|%5d|\n", indice->indice, indice->identificador, indice->tipo, indice->entrada_salida);
     }
+    printf("+------------------------------------------------------------+\n");
+    printf("|                                                            |\n");
+    printf("|              E/S: 0 - Ninguna, 1 - Entrada                 |\n");
+    printf("|              2 - Salida, 3 - Entrada/Salida                |\n");
+    printf("|                                                            |\n");
     printf("\\------------------------------------------------------------/\n");
     return;
 }
